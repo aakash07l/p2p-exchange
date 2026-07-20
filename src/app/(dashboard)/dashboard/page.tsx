@@ -53,7 +53,7 @@ export default function DashboardPage() {
           { label: 'Support',  href: '/help',               icon: Headphones },
         ].map(({ label, href, icon: Icon }) => (
           <Link key={label} href={href} className="group flex flex-col items-center gap-2.5 text-center">
-            <span className="flex h-[72px] w-[72px] items-center justify-center rounded-[22px] border border-[#6c5ae8]/30 bg-white text-[#4744ed] transition group-hover:-translate-y-1 group-hover:bg-[#f5f3ff] shadow-[0_2px_8px_rgba(71,68,237,.08)]">
+            <span className="flex h-[72px] w-[72px] items-center justify-center rounded-[22px] border border-[#6c5ae8]/30 bg-white text-[#000000] transition group-hover:-translate-y-1 group-hover:bg-[#000000] shadow-[0_2px_8px_rgba(71,68,237,.08)]">
               <Icon size={28} strokeWidth={1.7} />
             </span>
             <span className="text-[14px] font-medium text-[#312d36]">{label}</span>
@@ -77,14 +77,11 @@ export default function DashboardPage() {
         <p className="mt-3 text-[16px] leading-6 text-[#514c58]">
           Earn 0.5% on every trade your friends make. Invite people you trust &amp; start earning today!
         </p>
-        <div className="mt-6 rounded-[18px] bg-[#e7e2ff] p-6 text-[16px] leading-6 text-[#3d385e]">
-          Start trading and invite friends to unlock referral rewards!
-        </div>
         <Link
           href="/referrals"
           className="mt-5 flex items-center gap-2 text-[16px] font-semibold text-[#4744ed]"
         >
-          Invite friends <ChevronRight size={18} />
+          Invite friends <ChevronRight size={16} />
         </Link>
       </section>
     </div>
