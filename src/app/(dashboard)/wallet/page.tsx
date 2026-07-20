@@ -278,12 +278,12 @@ export default function WalletPage() {
           <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-handle" />
 
-            <div className="px-6 pb-6 space-y-5">
-              {/* Sheet Header */}
-              <div className="flex items-start justify-between border-b border-[#f0edff] pb-4">
+            <div className="px-6 pb-6 space-y-4">
+              {/* Sticky Sheet Header */}
+              <div className="sticky top-0 z-10 bg-white pt-1 pb-4 flex items-start justify-between border-b border-[#f0edff]">
                 <div>
-                  <h3 className="text-[22px] font-extrabold text-[#17161c]">Deposit USDT</h3>
-                  <p className="text-[14px] font-medium text-[#504b55] mt-0.5">
+                  <h3 className="text-[20px] font-extrabold text-[#17161c]">Deposit USDT</h3>
+                  <p className="text-[13px] font-medium text-[#504b55] mt-0.5">
                     BNB Smart Chain (BEP-20)
                   </p>
                 </div>
@@ -294,59 +294,59 @@ export default function WalletPage() {
 
               {/* Main Card */}
               {depositAddress ? (
-                <div className="space-y-5 text-center">
+                <div className="space-y-4 text-center">
 
                   {/* Network Pill */}
-                  <div className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f0edff] border border-[#d7d0f0] px-5 py-2 text-[14px] font-bold text-[#4744ed] shadow-sm mx-auto">
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <div className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f0edff] border border-[#d7d0f0] px-4 py-1.5 text-[13px] font-bold text-[#4744ed] shadow-sm mx-auto">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                     Network: BEP-20 (BNB Smart Chain)
                   </div>
 
-                  {/* QR Code Container - 100% Centered */}
+                  {/* QR Code Container - 100% Centered & Responsive */}
                   <div className="w-full flex justify-center items-center py-1">
-                    <div className="p-4 bg-white border-2 border-[#e8e5ed] rounded-[24px] shadow-md flex items-center justify-center">
+                    <div className="p-3.5 bg-white border-2 border-[#e8e5ed] rounded-[24px] shadow-md flex items-center justify-center">
                       {qrDataUrl && (
                         <img
                           src={qrDataUrl}
                           alt="Deposit QR Code"
-                          className="w-60 h-60 sm:w-64 sm:h-64 object-contain mx-auto block"
+                          className="w-48 h-48 sm:w-56 sm:h-56 object-contain mx-auto block"
                         />
                       )}
                     </div>
                   </div>
 
                   {/* Deposit Address Card - Extra Bold & Large Font */}
-                  <div className="rounded-[22px] bg-[#f6f5fb] border-2 border-[#e0dbf5] p-5 text-center space-y-3 shadow-sm">
-                    <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#6b6575]">
+                  <div className="rounded-[22px] bg-[#f6f5fb] border-2 border-[#e0dbf5] p-4 text-center space-y-3 shadow-sm">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6575]">
                       YOUR BEP-20 DEPOSIT ADDRESS
                     </p>
 
-                    <div className="rounded-2xl bg-white border-2 border-[#e0dbf5] p-4 shadow-inner">
-                      <p className="text-[16px] sm:text-[18px] font-black font-mono text-[#17161c] break-all leading-relaxed select-all tracking-tight">
+                    <div className="rounded-2xl bg-white border-2 border-[#e0dbf5] p-3.5 shadow-inner">
+                      <p className="text-[15px] sm:text-[17px] font-black font-mono text-[#17161c] break-all leading-snug select-all tracking-tight">
                         {depositAddress}
                       </p>
                     </div>
 
                     <button
                       onClick={copyAddress}
-                      className="w-full flex items-center justify-center gap-2.5 py-4 rounded-xl bg-[#4744ed] text-white font-bold text-[16px] shadow-[0_4px_16px_rgba(71,68,237,.30)] hover:bg-[#3a37d4] transition active:scale-[0.98]"
+                      className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#4744ed] text-white font-bold text-[15px] shadow-[0_4px_16px_rgba(71,68,237,.30)] hover:bg-[#3a37d4] transition active:scale-[0.98]"
                     >
-                      {copied ? <CheckCircle size={20} className="text-emerald-300" /> : <Copy size={20} />}
-                      {copied ? 'Address Copied to Clipboard!' : 'Copy Deposit Address'}
+                      {copied ? <CheckCircle size={18} className="text-emerald-300" /> : <Copy size={18} />}
+                      {copied ? 'Address Copied!' : 'Copy Deposit Address'}
                     </button>
                   </div>
 
                   {/* Warning Notice */}
-                  <div className="flex items-center justify-center gap-2.5 p-4 rounded-[16px] bg-amber-50 border border-amber-200 text-[13px] text-amber-800 font-semibold leading-snug">
-                    <AlertCircle size={18} className="text-amber-600 shrink-0" />
+                  <div className="flex items-center justify-center gap-2 p-3.5 rounded-[16px] bg-amber-50 border border-amber-200 text-[12px] text-amber-800 font-semibold leading-snug">
+                    <AlertCircle size={16} className="text-amber-600 shrink-0" />
                     <span>Send only <strong>USDT on BEP-20 (BNB Smart Chain)</strong> network.</span>
                   </div>
 
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-16 gap-3 text-[#9592a0]">
+                <div className="flex flex-col items-center justify-center py-12 gap-3 text-[#9592a0]">
                   <Loader2 size={28} className="animate-spin text-[#4744ed]" />
-                  <p className="text-[15px] font-medium">Generating your BEP-20 address…</p>
+                  <p className="text-[14px] font-medium">Generating your BEP-20 address…</p>
                 </div>
               )}
             </div>
