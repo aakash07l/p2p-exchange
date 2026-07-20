@@ -132,7 +132,7 @@ export default function WalletPage() {
       setWithdrawResult({
         success: d.success,
         message: d.success
-          ? `Withdrawal of ${withdrawAmount} USDC submitted! TX: ${d.data?.txHash?.slice(0, 20)}…`
+          ? `Withdrawal of ${withdrawAmount} USDT submitted! TX: ${d.data?.txHash?.slice(0, 20)}…`
           : d.error,
       });
       if (d.success) { setWithdrawAmount(''); setWithdrawAddr(''); loadWallet(); }
@@ -158,7 +158,7 @@ export default function WalletPage() {
   };
 
   const balances = [
-    { asset: 'USDC', balance: walletData?.usdtBalance || 0, icon: '₮', color: '#059669', bg: '#d1fae5', fgCls: 'text-emerald-700' },
+    { asset: 'USDT', balance: walletData?.usdtBalance || 0, icon: '₮', color: '#059669', bg: '#d1fae5', fgCls: 'text-emerald-700' },
     { asset: 'BTC',  balance: walletData?.btcBalance  || 0, icon: '₿', color: '#f59e0b', bg: '#fef3c7', fgCls: 'text-amber-700' },
     { asset: 'ETH',  balance: walletData?.ethBalance  || 0, icon: 'Ξ', color: '#6366f1', bg: '#e0e7ff', fgCls: 'text-indigo-700' },
   ];
@@ -173,7 +173,7 @@ export default function WalletPage() {
         <div>
           <h2 className="text-[22px] font-bold tracking-[-0.04em] text-[#17161c]">Setup Your Wallet</h2>
           <p className="mt-2 text-[15px] text-[#5d5762] leading-relaxed">
-            Create a secure Privy embedded wallet to start buying, selling, and depositing USDC. Takes only a few seconds.
+            Create a secure Privy embedded wallet to start buying, selling, and depositing USDT. Takes only a few seconds.
           </p>
         </div>
         <button
@@ -354,22 +354,39 @@ export default function WalletPage() {
         </div>
       )}
 
+      {withdrawResult && (
+        <div className={`flex items-start gap-2.5 rounded-[14px] p-4 text-[13px] ${
+          withdrawResult.success
+            ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+            : 'bg-red-50 border border-red-200 text-red-700'
+        }`}>
+          {withdrawResult.success ? <CheckCircle size={15} className="mt-0.5 shrink-0" /> : <AlertCircle size={15} className="mt-0.5 shrink-0" />}
+          <p>{withdrawResult.message}</p>
+        </div>
+      )}
+
       {/* ── WITHDRAW BOTTOM SHEET ── */}
       {sheet === 'withdraw' && (
         <div className="sheet-overlay" onClick={() => setSheet(null)}>
           <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-handle" />
 
-            <div className="px-6 pb-2 space-y-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-[20px] font-bold text-[#17161c]">Withdraw USDT</h3>
-                  <p className="text-[14px] text-[#9592a0]">
-                    Available: <strong className="text-[#17161c]">{walletData?.usdtBalance?.toFixed(2) || '0.00'} USDT</strong>
-                  </p>
+            <div className="px-6 pb-4 space-y-4">
+              {/* Sticky Header with Back Button */}
+              <div className="sticky top-0 z-10 bg-white pt-1 pb-4 flex items-center justify-between border-b border-[#f0edff]">
+                <div className="flex items-center gap-3">
+                  <button onClick={() => setSheet(null)} aria-label="Go back" className="icon-button">
+                    <ArrowUpFromLine size={18} className="rotate-[-90deg]" />
+                  </button>
+                  <div>
+                    <h3 className="text-[20px] font-extrabold text-[#17161c]">Withdraw USDT</h3>
+                    <p className="text-[13px] font-medium text-[#504b55]">
+                      Available: <strong className="text-[#17161c]">{walletData?.usdtBalance?.toFixed(2) || '0.00'} USDT</strong>
+                    </p>
+                  </div>
                 </div>
                 <button onClick={() => setSheet(null)} className="icon-button">
-                  <X size={18} />
+                  <X size={20} />
                 </button>
               </div>
 
@@ -447,8 +464,8 @@ export default function WalletPage() {
                 {loading ? <><Loader2 size={15} className="animate-spin" /> Processing…</> : 'Confirm Withdrawal'}
               </button>
 
-              <button onClick={() => setSheet(null)} className="w-full text-[14px] font-semibold text-[#9592a0] py-2 mb-4">
-                Cancel
+              <button onClick={() => setSheet(null)} className="w-full text-[15px] font-bold text-[#4744ed] py-2 mb-4 hover:underline">
+                ← Back to Wallet
               </button>
             </div>
           </div>

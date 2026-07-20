@@ -64,9 +64,18 @@ function DashboardHeader({ onMenu }: { onMenu: () => void }) {
 /* ── Sub-page header (back + title + help) ── */
 function PageHeader({ title }: { title: string }) {
   const router = useRouter();
+
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/dashboard');
+    }
+  };
+
   return (
     <header className="app-header">
-      <button onClick={() => router.back()} aria-label="Go back" className="icon-button">
+      <button onClick={handleBack} aria-label="Go back" className="icon-button">
         <ArrowLeft size={20} />
       </button>
       <h1 className="ml-3 text-[20px] font-bold tracking-[-0.04em] text-[#17161c]">{title}</h1>
