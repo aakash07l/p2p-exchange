@@ -278,59 +278,77 @@ export default function WalletPage() {
           <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-handle" />
 
-            <div className="px-6 pb-4">
-              <div className="flex items-center justify-between mb-4">
+            <div className="px-6 pb-6 space-y-5">
+              {/* Sheet Header */}
+              <div className="flex items-start justify-between border-b border-[#f0edff] pb-4">
                 <div>
-                  <h3 className="text-[20px] font-bold text-[#17161c]">Deposit USDT</h3>
-                  <p className="text-[13px] text-[#9592a0]">BNB Smart Chain (BEP-20)</p>
+                  <h3 className="text-[22px] font-extrabold text-[#17161c]">Deposit USDT</h3>
+                  <p className="text-[14px] font-medium text-[#504b55] mt-0.5">
+                    BNB Smart Chain (BEP-20)
+                  </p>
                 </div>
                 <button onClick={() => setSheet(null)} className="icon-button">
-                  <X size={18} />
+                  <X size={20} />
                 </button>
               </div>
 
-              <div className="rounded-[22px] border border-[#e8e5ed] bg-white p-6 space-y-4 text-center">
-                {depositAddress ? (
-                  <>
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[#f0edff] border border-[#e0dbf5] px-4 py-1.5 text-[13px] font-semibold text-[#4744ed]">
-                      🟡 Network: BEP-20 (BNB Smart Chain)
-                    </div>
+              {/* Main Card */}
+              {depositAddress ? (
+                <div className="space-y-5 text-center">
 
-                    {/* QR Code Centered */}
-                    <div className="flex justify-center p-4 bg-white border border-[#e8e5ed] rounded-2xl w-52 h-52 mx-auto shadow-sm">
-                      {qrDataUrl && <img src={qrDataUrl} alt="Deposit QR" className="w-full h-full object-contain" />}
-                    </div>
-
-                    {/* Privy Deposit Address */}
-                    <div>
-                      <p className="text-[12px] font-semibold uppercase tracking-wider text-[#9592a0] mb-1.5">Your Deposit Address</p>
-                      <div className="flex items-center gap-2 p-3.5 rounded-[14px] bg-[#f6f9ff] border border-[#e0dbf5]">
-                        <code className="flex-1 text-[12px] text-[#4744ed] font-mono break-all font-semibold">
-                          {depositAddress}
-                        </code>
-                        <button
-                          onClick={copyAddress}
-                          className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-xl bg-white border border-[#e0dbf5] hover:bg-[#f0edff] transition text-[12px] font-semibold text-[#4744ed]"
-                        >
-                          {copied ? <CheckCircle size={14} className="text-emerald-500" /> : <Copy size={14} />}
-                          {copied ? 'Copied' : 'Copy'}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Simple Warning */}
-                    <div className="flex items-center justify-center gap-2 p-3 rounded-[14px] bg-amber-50 border border-amber-200 text-[12px] text-amber-800 font-medium">
-                      <AlertCircle size={15} className="text-amber-500 shrink-0" />
-                      <span>Send only <strong>USDT on BEP-20 (BNB Smart Chain)</strong></span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex flex-col items-center py-10 gap-3 text-[#9592a0]">
-                    <Loader2 size={24} className="animate-spin text-[#4744ed]" />
-                    <p className="text-[13px]">Loading deposit address…</p>
+                  {/* Network Pill */}
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[#f0edff] border border-[#d7d0f0] px-4 py-2 text-[14px] font-bold text-[#4744ed] shadow-sm">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Network: BEP-20 (BNB Smart Chain)
                   </div>
-                )}
-              </div>
+
+                  {/* QR Code Container - Perfectly Centered */}
+                  <div className="flex justify-center items-center py-2">
+                    <div className="p-4 bg-white border-2 border-[#e8e5ed] rounded-[24px] shadow-md flex items-center justify-center mx-auto">
+                      {qrDataUrl && (
+                        <img
+                          src={qrDataUrl}
+                          alt="Deposit QR Code"
+                          className="w-56 h-56 sm:w-64 sm:h-64 object-contain mx-auto block"
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Deposit Address Card - Bold & Larger Text */}
+                  <div className="rounded-[20px] bg-[#f6f5fb] border-2 border-[#e0dbf5] p-5 text-center space-y-3 shadow-sm">
+                    <p className="text-[12px] font-bold uppercase tracking-[0.12em] text-[#6b6575]">
+                      Your BEP-20 Deposit Address
+                    </p>
+
+                    <div className="rounded-xl bg-white border border-[#e0dbf5] p-3.5">
+                      <p className="text-[15px] sm:text-[16px] font-extrabold font-mono text-[#17161c] break-all leading-relaxed select-all">
+                        {depositAddress}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={copyAddress}
+                      className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#4744ed] text-white font-bold text-[15px] shadow-[0_4px_14px_rgba(71,68,237,.25)] hover:bg-[#3a37d4] transition active:scale-[0.98]"
+                    >
+                      {copied ? <CheckCircle size={18} className="text-emerald-300" /> : <Copy size={18} />}
+                      {copied ? 'Address Copied to Clipboard!' : 'Copy Deposit Address'}
+                    </button>
+                  </div>
+
+                  {/* Warning Notice */}
+                  <div className="flex items-center justify-center gap-2.5 p-4 rounded-[16px] bg-amber-50 border border-amber-200 text-[13px] text-amber-800 font-semibold leading-snug">
+                    <AlertCircle size={18} className="text-amber-600 shrink-0" />
+                    <span>Send only <strong>USDT on BEP-20 (BNB Smart Chain)</strong> network.</span>
+                  </div>
+
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16 gap-3 text-[#9592a0]">
+                  <Loader2 size={28} className="animate-spin text-[#4744ed]" />
+                  <p className="text-[15px] font-medium">Generating your BEP-20 address…</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

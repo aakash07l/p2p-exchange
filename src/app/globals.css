@@ -222,12 +222,13 @@ body {
 .sheet-overlay {
   position: fixed;
   inset: 0;
-  z-index: 80;
-  background: rgba(0, 0, 0, 0.45);
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
+  padding-top: 24px;
 }
 
 .sheet-panel {
@@ -235,10 +236,13 @@ body {
   max-width: 560px;
   background: white;
   border-radius: 28px 28px 0 0;
-  padding: 0 0 40px;
-  max-height: 92dvh;
+  padding: 0 0 32px;
+  max-height: 90vh;
+  max-height: 90dvh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   animation: sheetUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
 }
 
 .sheet-handle {
