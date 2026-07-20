@@ -57,6 +57,7 @@ body {
   border-left: 1px solid var(--border);
   border-right: 1px solid var(--border);
   box-shadow: 0 0 60px rgba(100, 80, 200, 0.06);
+  overflow-x: hidden;
 }
 
 /* Scrollable content area */
@@ -95,6 +96,8 @@ body {
 .app-main {
   padding: 20px 24px 140px;
   flex: 1;
+  width: 100%;
+  min-width: 0;
 }
 
 /* Reduced padding on small screens */

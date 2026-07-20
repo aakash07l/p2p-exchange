@@ -8,7 +8,7 @@ import {
 import { usePrivy, useCreateWallet, useWallets } from '@privy-io/react-auth';
 import QRCode from 'qrcode';
 
-type Sheet = null | 'deposit' | 'withdraw';
+type Sheet = null | 'deposit' | 'withdraw' | 'usdt_actions' | 'bnb_actions';
 
 interface WalletData {
   usdtBalance: number;
@@ -158,9 +158,24 @@ export default function WalletPage() {
   };
 
   const balances = [
-    { asset: 'USDT', balance: walletData?.usdtBalance || 0, icon: '₮', color: '#059669', bg: '#d1fae5', fgCls: 'text-emerald-700' },
-    { asset: 'BTC',  balance: walletData?.btcBalance  || 0, icon: '₿', color: '#f59e0b', bg: '#fef3c7', fgCls: 'text-amber-700' },
-    { asset: 'ETH',  balance: walletData?.ethBalance  || 0, icon: 'Ξ', color: '#6366f1', bg: '#e0e7ff', fgCls: 'text-indigo-700' },
+    { 
+      asset: 'USDT', 
+      balance: walletData?.usdtBalance || 0, 
+      icon: '₮', 
+      color: '#059669', 
+      bg: '#d1fae5', 
+      fgCls: 'text-emerald-700',
+      action: () => setSheet('usdt_actions')
+    },
+    { 
+      asset: 'BNB',  
+      balance: walletData?.btcBalance  || 0, 
+      icon: 'BNB',  
+      color: '#f59e0b', 
+      bg: '#fff7ed', 
+      fgCls: 'text-amber-700',
+      action: () => setSheet('bnb_actions')
+    },
   ];
 
   /* ── No wallet: create prompt ── */
@@ -198,7 +213,7 @@ export default function WalletPage() {
       <div className="animate-slide-up space-y-4 pt-2 pb-6">
 
       {/* Balance hero */}
-      <div className="rounded-[24px] bg-gradient-to-br from-[#4744ed] to-[#7557ff] p-5 text-white shadow-[0_8px_28px_rgba(71,68,237,.30)]">
+      <div className="rounded-[24px] bg-gradient-to-br from-[#4744ed] to-[#7557ff] px-6 py-5.5 text-white shadow-[0_8px_28px_rgba(71,68,237,.30)] w-full min-w-0">
         <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-white/60">Available Balance</p>
         <p className="mt-1 text-[42px] font-extrabold tracking-[-0.05em] leading-tight">
           ${(walletData?.usdtBalance || 0).toFixed(2)}
@@ -209,46 +224,40 @@ export default function WalletPage() {
 
         {/* Wallet address */}
         {walletData?.address && (
-          <div className="mt-4 flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2">
-            <code className="flex-1 text-[11px] font-mono text-white/70 truncate">
-              {walletData.address}
-            </code>
-            <button onClick={copyAddress} className="shrink-0 p-1.5 rounded-lg hover:bg-white/20 transition">
-              {copied ? <CheckCircle size={14} className="text-emerald-300" /> : <Copy size={14} />}
-            </button>
+          <div className="mt-4 flex flex-col gap-1.5 rounded-xl bg-white/10 px-4 py-3 border border-white/10 w-full min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/50">
+              Your Wallet Address (BEP-20)
+            </p>
+            <div className="flex items-center justify-between gap-2 w-full min-w-0">
+              <p className="flex-1 text-[13px] sm:text-[14px] font-bold font-mono text-white break-all whitespace-normal leading-normal select-all min-w-0 max-w-[200px] sm:max-w-[280px]">
+                {walletData.address}
+              </p>
+              <button 
+                onClick={copyAddress} 
+                className="shrink-0 p-2.5 rounded-xl bg-white/10 hover:bg-white/20 transition active:scale-[0.95]"
+                title="Copy Address"
+              >
+                {copied ? <CheckCircle size={15} className="text-emerald-300" /> : <Copy size={15} />}
+              </button>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Quick action buttons */}
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          onClick={() => setSheet('deposit')}
-          className="flex items-center justify-center gap-2.5 rounded-[18px] border border-[#e8e5ed] bg-white py-4 font-semibold text-[15px] text-[#17161c] shadow-sm transition hover:border-[#4744ed] hover:text-[#4744ed]"
-        >
-          <ArrowDownToLine size={18} strokeWidth={2} /> Deposit
-        </button>
-        <button
-          onClick={() => setSheet('withdraw')}
-          className="flex items-center justify-center gap-2.5 rounded-[18px] border border-[#e8e5ed] bg-white py-4 font-semibold text-[15px] text-[#17161c] shadow-sm transition hover:border-[#17161c]"
-        >
-          <ArrowUpFromLine size={18} strokeWidth={2} /> Withdraw
-        </button>
-      </div>
-
       {/* Asset balances */}
       <div className="space-y-2">
-        {balances.map(({ asset, balance, icon, bg, fgCls }) => (
-          <div
+        {balances.map(({ asset, balance, icon, bg, fgCls, action }) => (
+          <button
             key={asset}
-            className="flex items-center justify-between rounded-[18px] border border-[#e8e5ed] bg-white p-4 transition hover:border-[#ccc8d8] hover:shadow-sm"
+            onClick={action}
+            className="w-full flex items-center justify-between rounded-[18px] border border-[#e8e5ed] bg-white p-4 transition hover:border-[#ccc8d8] hover:shadow-sm text-left active:scale-[0.99] select-none"
           >
             <div className="flex items-center gap-3">
               <div
-                className="w-11 h-11 rounded-2xl flex items-center justify-center text-[18px] font-bold"
+                className="w-11 h-11 rounded-2xl flex items-center justify-center text-[18px] font-bold shrink-0"
                 style={{ background: bg }}
               >
-                <span className={fgCls}>{icon}</span>
+                <span className={`${fgCls} ${icon.length > 1 ? 'text-[11px] font-extrabold tracking-tight' : ''}`}>{icon}</span>
               </div>
               <div>
                 <p className="font-semibold text-[#17161c] text-[15px]">{asset}</p>
@@ -261,17 +270,9 @@ export default function WalletPage() {
               </p>
               <p className="text-[11px] text-[#9592a0]">{asset}</p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
-
-      {/* Refresh button */}
-      <button
-        onClick={loadWallet}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-[16px] bg-[#f6f9ff] border border-[#e0dbf5] text-[14px] font-semibold text-[#4744ed] transition hover:bg-[#edeaff]"
-      >
-        <RefreshCw size={14} /> Refresh Balances
-      </button>
 
       </div>
 
@@ -339,6 +340,82 @@ export default function WalletPage() {
                 <p className="text-[13px] font-medium">Generating your BEP-20 address…</p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ── USDT ACTIONS BOTTOM SHEET ── */}
+      {sheet === 'usdt_actions' && (
+        <div className="sheet-overlay" onClick={() => setSheet(null)}>
+          <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="sheet-handle mb-2" />
+            <div className="flex items-center justify-between border-b border-[#f0edff] pb-2.5 mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#d1fae5] flex items-center justify-center text-[15px] font-bold text-emerald-700">₮</div>
+                <h3 className="text-[18px] font-extrabold text-[#17161c] tracking-tight">USDT Options</h3>
+              </div>
+              <button onClick={() => setSheet(null)} className="icon-button">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mb-2">
+              <button
+                onClick={() => setSheet('deposit')}
+                className="flex flex-col items-center justify-center gap-3 p-4 rounded-[20px] border border-[#e8e5ed] bg-white text-[#17161c] hover:border-[#4744ed] hover:text-[#4744ed] transition active:scale-95 shadow-sm"
+              >
+                <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+                  <ArrowDownToLine size={20} />
+                </div>
+                <span className="font-bold text-[14px]">Deposit</span>
+              </button>
+              <button
+                onClick={() => setSheet('withdraw')}
+                className="flex flex-col items-center justify-center gap-3 p-4 rounded-[20px] border border-[#e8e5ed] bg-white text-[#17161c] hover:border-[#17161c] transition active:scale-95 shadow-sm"
+              >
+                <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-[#4744ed]">
+                  <ArrowUpFromLine size={20} />
+                </div>
+                <span className="font-bold text-[14px]">Withdraw</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── BNB ACTIONS BOTTOM SHEET ── */}
+      {sheet === 'bnb_actions' && (
+        <div className="sheet-overlay" onClick={() => setSheet(null)}>
+          <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="sheet-handle mb-2" />
+            <div className="flex items-center justify-between border-b border-[#f0edff] pb-2.5 mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#fff7ed] flex items-center justify-center text-[11px] font-extrabold text-amber-700 font-sans">BNB</div>
+                <h3 className="text-[18px] font-extrabold text-[#17161c] tracking-tight">BNB Options</h3>
+              </div>
+              <button onClick={() => setSheet(null)} className="icon-button">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mb-2">
+              <button
+                onClick={() => setSheet('deposit')}
+                className="flex flex-col items-center justify-center gap-3 p-4 rounded-[20px] border border-[#e8e5ed] bg-white text-[#17161c] hover:border-[#4744ed] hover:text-[#4744ed] transition active:scale-95 shadow-sm"
+              >
+                <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
+                  <ArrowDownToLine size={20} />
+                </div>
+                <span className="font-bold text-[14px]">Deposit</span>
+              </button>
+              <button
+                onClick={() => setSheet('withdraw')}
+                className="flex flex-col items-center justify-center gap-3 p-4 rounded-[20px] border border-[#e8e5ed] bg-white text-[#17161c] hover:border-[#17161c] transition active:scale-95 shadow-sm"
+              >
+                <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-[#4744ed]">
+                  <ArrowUpFromLine size={20} />
+                </div>
+                <span className="font-bold text-[14px]">Withdraw</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
