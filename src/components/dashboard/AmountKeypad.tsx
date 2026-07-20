@@ -114,8 +114,8 @@ export function AmountKeypad({
         onClick={onContinue}
         disabled={disabled || !Number(amount) || hasInsufficientFunds}
         className="mt-6 w-full rounded-[16px] py-[18px] text-[18px] font-bold text-white transition-all
-          disabled:bg-[#b3c6fb] disabled:cursor-not-allowed
-          enabled:bg-[#000000] enabled:shadow-[0_6px_16px_rgba(71,68,237,.28)] enabled:hover:bg-[#3a37d4]"
+          disabled:bg-[#000000] disabled:cursor-not-allowed
+          enabled:bg-[#000000] enabled:shadow-[0_6px_16px_rgba(71,68,237,.28)] enabled:hover:bg-[#33aa33]"
       >
         {hasInsufficientFunds ? 'Insufficient Funds' : actionLabel}
       </button>
