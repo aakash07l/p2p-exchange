@@ -1,0 +1,366 @@
+@import "tailwindcss";
+
+
+/* ===================================================
+   DESIGN TOKENS
+   =================================================== */
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #f5f5f8;
+  --fg: #17161c;
+  --fg-muted: #504a56;
+  --fg-faint: #9592a0;
+  --primary: #4744ed;
+  --primary-hover: #3a37d4;
+  --primary-faint: #f0edff;
+  --border: #e8e5ed;
+  --border-strong: #ccc8d8;
+  --success: #059669;
+  --danger: #dc2626;
+  --warning: #d97706;
+}
+
+/* ===================================================
+   RESET
+   =================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html { height: 100%; }
+
+body {
+  height: 100%;
+  background: #eeeef5;
+  color: var(--fg);
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+  letter-spacing: -0.02em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===================================================
+   APP COLUMN — narrow mobile-first layout
+   =================================================== */
+.app-shell {
+  width: 100%;
+  max-width: 560px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  box-shadow: 0 0 60px rgba(100, 80, 200, 0.06);
+}
+
+/* Scrollable content area */
+.app-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ===================================================
+   HEADER — sticky inside app-shell
+   =================================================== */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: 72px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+}
+
+/* Sub-page header (back arrow + title) */
+.app-header-page {
+  height: 68px;
+}
+
+/* ===================================================
+   MAIN CONTENT
+   =================================================== */
+.app-main {
+  padding: 20px 24px 140px;
+  flex: 1;
+}
+
+/* Reduced padding on small screens */
+@media (max-width: 400px) {
+  .app-main { padding-left: 16px; padding-right: 16px; }
+  .app-header { padding-left: 16px; padding-right: 16px; }
+}
+
+/* ===================================================
+   ICON BUTTON (header)
+   =================================================== */
+.icon-button {
+  flex-shrink: 0;
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  color: var(--fg);
+  background: white;
+  box-shadow: 0 1px 3px rgba(20, 15, 40, 0.04);
+  transition: background 0.15s, transform 0.1s;
+  cursor: pointer;
+}
+.icon-button:hover { background: var(--primary-faint); }
+.icon-button:active { transform: scale(0.94); }
+
+/* ===================================================
+   BOTTOM TRADE DOCK (fixed, dashboard only)
+   =================================================== */
+.trade-dock {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 560px;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.97);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 24px rgba(74, 48, 172, 0.10);
+  padding: 14px 20px 28px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.dock-trade {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 15px 12px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: white;
+  box-shadow: 0 3px 12px rgba(54, 42, 158, 0.15);
+  transition: transform 0.1s, opacity 0.1s;
+  white-space: nowrap;
+}
+.dock-trade:active { transform: scale(0.96); opacity: 0.9; }
+.dock-buy  { background: linear-gradient(135deg, #5343f5 0%, #4744ed 100%); }
+.dock-sell { background: #171717; }
+
+.dock-scan-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  bottom: 14px;
+  flex-shrink: 0;
+}
+
+.dock-scan-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 7px solid white;
+  background: #faf9ff;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 18px rgba(67, 45, 198, 0.20);
+}
+
+.dock-scan-label {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+/* ===================================================
+   DRAWER / SIDEBAR MENU
+   =================================================== */
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 0;
+  color: var(--fg);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  border-bottom: 1px solid #f2f0f5;
+  cursor: pointer;
+}
+.drawer-item:last-child { border-bottom: none; }
+
+@keyframes drawerIn {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ===================================================
+   BOTTOM SHEET MODAL
+   =================================================== */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.sheet-panel {
+  width: 100%;
+  max-width: 560px;
+  background: white;
+  border-radius: 28px 28px 0 0;
+  padding: 0 0 40px;
+  max-height: 92dvh;
+  overflow-y: auto;
+  animation: sheetUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sheet-handle {
+  width: 44px;
+  height: 4px;
+  background: var(--border-strong);
+  border-radius: 2px;
+  margin: 12px auto 20px;
+}
+
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* ===================================================
+   KEYPAD PAGE LAYOUT
+   =================================================== */
+.keypad-page {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 72px - 110px);
+  padding: 8px 0 8px;
+}
+
+/* ===================================================
+   CARDS
+   =================================================== */
+.p2p-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+
+.p2p-card-hover {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.p2p-card-hover:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+}
+
+/* ===================================================
+   BUTTONS
+   =================================================== */
+.p2p-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  transition: all 0.15s;
+  cursor: pointer;
+  border: none;
+}
+
+.p2p-btn-primary {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 6px 16px rgba(71, 68, 237, 0.28);
+}
+.p2p-btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+  box-shadow: 0 8px 20px rgba(71, 68, 237, 0.36);
+  transform: translateY(-1px);
+}
+.p2p-btn-primary:active:not(:disabled) { transform: translateY(0); }
+.p2p-btn-primary:disabled { background: #b3c6fb; box-shadow: none; cursor: not-allowed; }
+
+/* ===================================================
+   FORM INPUTS
+   =================================================== */
+.p2p-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-subtle);
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--fg);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.p2p-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(71, 68, 237, 0.10);
+  background: white;
+}
+.p2p-input::placeholder { color: var(--fg-faint); }
+
+/* ===================================================
+   STATUS BADGES
+   =================================================== */
+.badge-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+.badge-danger  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+.badge-warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+.badge-info    { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+
+/* ===================================================
+   ANIMATIONS
+   =================================================== */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up { animation: fadeSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 0.8s linear infinite; }
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.pulse-dot { animation: pulse 2s ease infinite; }
+
+/* ===================================================
+   SCROLLBAR
+   =================================================== */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 10px; }

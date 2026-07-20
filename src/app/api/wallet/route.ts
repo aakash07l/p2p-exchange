@@ -1,0 +1,53 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { PrivyClient } from '@privy-io/server-auth';
+import prisma from '@/lib/db/prisma';
+import { getAssetPrices } from '@/lib/api/mockApi';
+
+const privy = new PrivyClient(
+  process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
+  process.env.PRIVY_APP_SECRET!
+);
+
+export async function GET(req: NextRequest) {
+  try {
+    const token = req.cookies.get('privy-token')?.value ||
+      req.headers.get('authorization')?.replace('Bearer ', '');
+    if (!token) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+
+    const claims = await privy.verifyAuthToken(token);
+    const user = await prisma.user.findUnique({
+      where: { privyId: claims.userId },
+      include: { wallet: true },
+    });
+    if (!user) return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
+
+    const prices = await getAssetPrices();
+    let wallet = user.wallet;
+
+    // Reset legacy mock balance (6061.12) to 0 if present
+    if (wallet && Math.abs(wallet.usdtBalance - 6061.12) < 0.01) {
+      wallet = await prisma.wallet.update({
+        where: { userId: user.id },
+        data: { usdtBalance: 0 },
+      });
+    }
+
+    // Calculate total portfolio value in INR
+    const totalValue = wallet
+      ? (wallet.usdtBalance * prices.USDT) +
+        (wallet.btcBalance * prices.BTC) +
+        (wallet.ethBalance * prices.ETH) +
+        wallet.inrBalance
+      : 0;
+
+    return NextResponse.json({
+      success: true,
+      data: { wallet, prices, totalValue },
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : 'Server error' },
+      { status: 500 }
+    );
+  }
+}
