@@ -213,7 +213,7 @@ export default function WalletPage() {
       <div className="animate-slide-up space-y-4 pt-2 pb-6">
 
       {/* Balance hero */}
-      <div className="rounded-[24px] bg-gradient-to-br from-[#4744ed] to-[#7557ff] px-6 py-5.5 text-white shadow-[0_8px_28px_rgba(71,68,237,.30)] w-full min-w-0">
+      <div className="rounded-[24px] bg-gradient-to-br from-[#4744ed] to-[#7557ff] px-8 py-5.5 text-white shadow-[0_8px_28px_rgba(71,68,237,.30)] w-full min-w-0">
         <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-white/60">Available Balance</p>
         <p className="mt-1 text-[42px] font-extrabold tracking-[-0.05em] leading-tight">
           ${(walletData?.usdtBalance || 0).toFixed(2)}
@@ -221,27 +221,6 @@ export default function WalletPage() {
         <p className="text-[16px] text-white/60 mt-0.5">
           ≈ ₹{((walletData?.usdtBalance || 0) * 97.66).toFixed(2)}
         </p>
-
-        {/* Wallet address */}
-        {walletData?.address && (
-          <div className="mt-4 flex flex-col gap-1.5 rounded-xl bg-white/10 px-4 py-3 border border-white/10 w-full min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-white/50">
-              Your Wallet Address (BEP-20)
-            </p>
-            <div className="flex items-center justify-between gap-2 w-full min-w-0">
-              <p className="flex-1 text-[13px] sm:text-[14px] font-bold font-mono text-white break-all whitespace-normal leading-normal select-all min-w-0 max-w-[200px] sm:max-w-[280px]">
-                {walletData.address}
-              </p>
-              <button 
-                onClick={copyAddress} 
-                className="shrink-0 p-2.5 rounded-xl bg-white/10 hover:bg-white/20 transition active:scale-[0.95]"
-                title="Copy Address"
-              >
-                {copied ? <CheckCircle size={15} className="text-emerald-300" /> : <Copy size={15} />}
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Asset balances */}
