@@ -11,8 +11,8 @@ import {
 } from 'lucide-react';
 
 const PAGE_TITLES: Record<string, string> = {
-  '/buy':          'Buy USDC',
-  '/sell':         'Sell USDC',
+  '/buy':          'Buy USDT',
+  '/sell':         'Sell USDT',
   '/wallet':       'Wallet',
   '/transactions': 'Transactions',
   '/referrals':    'Refer & Earn',
@@ -33,7 +33,7 @@ function Logo() {
       <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-gradient-to-br from-[#4744ed] to-[#7557ff] text-white shadow-[0_3px_8px_rgba(71,68,237,.3)]">
         <ScanLine size={16} strokeWidth={2.5} />
       </span>
-      FASTX <span className="text-[#4744ed]">P2P</span>
+      FASTX <span className="text-[#33aa33]">P2P</span>
     </span>
   );
 }
@@ -51,9 +51,9 @@ function DashboardHeader({ onMenu }: { onMenu: () => void }) {
       <div className="flex items-center gap-2">
         <button aria-label="Notifications" className="icon-button relative">
           <Bell size={18} />
-          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#4744ed] ring-2 ring-white" />
+          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#33aa33] ring-2 ring-white" />
         </button>
-        <div className="flex h-[44px] w-[44px] items-center justify-center rounded-[13px] border border-[#e8e5ed] bg-[#f0edff] text-[15px] font-bold text-[#4744ed]">
+        <div className="flex h-[44px] w-[44px] items-center justify-center rounded-[13px] border border-[#e8e5ed] bg-[#f0edff] text-[15px] font-bold text-[#000000]">
           {initials}
         </div>
       </div>
