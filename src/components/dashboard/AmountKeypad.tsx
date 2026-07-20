@@ -75,7 +75,7 @@ export function AmountKeypad({
         {/* Insufficient Funds warning */}
         {hasInsufficientFunds && Number(amount) > 0 && (
           <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-red-50 border border-red-200 px-4 py-1.5 text-[13px] font-bold text-red-600 animate-pulse">
-            ⚠️ Insufficient Funds in Privy Wallet
+            ⚠️ Insufficient Funds
           </div>
         )}
       </div>
@@ -103,7 +103,7 @@ export function AmountKeypad({
       </div>
 
       {/* Max / Clear shortcuts */}
-      <div className="mt-2 flex justify-between px-[18%] text-[19px] font-semibold text-[#4744ed]">
+      <div className="mt-2 flex justify-between px-[18%] text-[19px] font-semibold text-[#33aa33]">
         <button type="button" onClick={() => onChange('999')}>Max</button>
         <button type="button" onClick={() => onChange('')}>Clear</button>
       </div>
@@ -115,7 +115,7 @@ export function AmountKeypad({
         disabled={disabled || !Number(amount) || hasInsufficientFunds}
         className="mt-6 w-full rounded-[16px] py-[18px] text-[18px] font-bold text-white transition-all
           disabled:bg-[#b3c6fb] disabled:cursor-not-allowed
-          enabled:bg-[#4744ed] enabled:shadow-[0_6px_16px_rgba(71,68,237,.28)] enabled:hover:bg-[#3a37d4]"
+          enabled:bg-[#000000] enabled:shadow-[0_6px_16px_rgba(71,68,237,.28)] enabled:hover:bg-[#3a37d4]"
       >
         {hasInsufficientFunds ? 'Insufficient Funds' : actionLabel}
       </button>
