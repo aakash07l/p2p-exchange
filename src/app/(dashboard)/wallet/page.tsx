@@ -279,8 +279,8 @@ export default function WalletPage() {
             <div className="sheet-handle" />
 
             <div className="px-6 pb-6 space-y-4">
-              {/* Sticky Sheet Header */}
-              <div className="sticky top-0 z-10 bg-white pt-1 pb-4 flex items-start justify-between border-b border-[#f0edff]">
+              {/* Sheet Header */}
+              <div className="flex items-center justify-between border-b border-[#f0edff] pb-3">
                 <div>
                   <h3 className="text-[20px] font-extrabold text-[#17161c]">Deposit USDT</h3>
                   <p className="text-[13px] font-medium text-[#504b55] mt-0.5">
@@ -292,37 +292,37 @@ export default function WalletPage() {
                 </button>
               </div>
 
-              {/* Main Card */}
+              {/* Main Content */}
               {depositAddress ? (
                 <div className="space-y-4 text-center">
 
-                  {/* Network Pill */}
-                  <div className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f0edff] border border-[#d7d0f0] px-4 py-1.5 text-[13px] font-bold text-[#4744ed] shadow-sm mx-auto">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                    Network: BEP-20 (BNB Smart Chain)
-                  </div>
-
-                  {/* QR Code Container - 100% Centered & Responsive */}
+                  {/* QR Code Container (Middle - Green Box Area) */}
                   <div className="w-full flex justify-center items-center py-1">
-                    <div className="p-3.5 bg-white border-2 border-[#e8e5ed] rounded-[24px] shadow-md flex items-center justify-center">
+                    <div className="p-3 bg-white border-2 border-[#e8e5ed] rounded-[24px] shadow-sm flex items-center justify-center mx-auto">
                       {qrDataUrl && (
                         <img
                           src={qrDataUrl}
                           alt="Deposit QR Code"
-                          className="w-48 h-48 sm:w-56 sm:h-56 object-contain mx-auto block"
+                          className="w-44 h-44 sm:w-52 sm:h-52 object-contain mx-auto block"
                         />
                       )}
                     </div>
                   </div>
 
-                  {/* Deposit Address Card - Extra Bold & Large Font */}
-                  <div className="rounded-[22px] bg-[#f6f5fb] border-2 border-[#e0dbf5] p-4 text-center space-y-3 shadow-sm">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#6b6575]">
+                  {/* Network Indicator */}
+                  <div className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f0edff] border border-[#d7d0f0] px-4 py-1.5 text-[12px] font-bold text-[#4744ed] mx-auto">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Network: BEP-20 (BNB Smart Chain)
+                  </div>
+
+                  {/* Address & Copy Card (Bottom Section - Yellow Box Area) */}
+                  <div className="rounded-[22px] bg-[#f6f5fb] border-2 border-[#e0dbf5] p-4 text-center space-y-2.5 shadow-sm">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#6b6575]">
                       YOUR BEP-20 DEPOSIT ADDRESS
                     </p>
 
-                    <div className="rounded-2xl bg-white border-2 border-[#e0dbf5] p-3.5 shadow-inner">
-                      <p className="text-[15px] sm:text-[17px] font-black font-mono text-[#17161c] break-all leading-snug select-all tracking-tight">
+                    <div className="rounded-xl bg-white border-2 border-[#e0dbf5] p-3 shadow-inner">
+                      <p className="text-[15px] sm:text-[16px] font-extrabold font-mono text-[#17161c] break-all leading-snug select-all tracking-tight">
                         {depositAddress}
                       </p>
                     </div>
@@ -337,7 +337,7 @@ export default function WalletPage() {
                   </div>
 
                   {/* Warning Notice */}
-                  <div className="flex items-center justify-center gap-2 p-3.5 rounded-[16px] bg-amber-50 border border-amber-200 text-[12px] text-amber-800 font-semibold leading-snug">
+                  <div className="flex items-center justify-center gap-2 p-3 rounded-[14px] bg-amber-50 border border-amber-200 text-[12px] text-amber-800 font-semibold leading-snug">
                     <AlertCircle size={16} className="text-amber-600 shrink-0" />
                     <span>Send only <strong>USDT on BEP-20 (BNB Smart Chain)</strong> network.</span>
                   </div>
