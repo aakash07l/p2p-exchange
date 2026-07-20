@@ -194,7 +194,8 @@ export default function WalletPage() {
 
   /* ── Main wallet view ── */
   return (
-    <div className="animate-slide-up space-y-4 pt-2 pb-6">
+    <>
+      <div className="animate-slide-up space-y-4 pt-2 pb-6">
 
       {/* Balance hero */}
       <div className="rounded-[24px] bg-gradient-to-br from-[#4744ed] to-[#7557ff] p-5 text-white shadow-[0_8px_28px_rgba(71,68,237,.30)]">
@@ -271,6 +272,8 @@ export default function WalletPage() {
       >
         <RefreshCw size={14} /> Refresh Balances
       </button>
+
+      </div>
 
       {/* ── DEPOSIT BOTTOM SHEET ── */}
       {sheet === 'deposit' && (
@@ -457,6 +460,6 @@ export default function WalletPage() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
