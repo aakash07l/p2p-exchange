@@ -57,7 +57,7 @@ export default function LoginPage() {
                 <ScanLine size={20} strokeWidth={2.5} />
               </span>
               <span className="text-[24px] font-extrabold tracking-[-0.05em] text-[#17161c]">
-                FASTX <span className="text-[#4744ed]">P2P</span>
+                FASTX <span className="text-[#33aa33]">P2P</span>
               </span>
             </div>
 
@@ -154,7 +154,7 @@ export default function LoginPage() {
             <button
               id="login-button"
               onClick={() => login()}
-              className="w-full py-4 rounded-[16px] bg-[#4744ed] hover:bg-[#000000] active:scale-[0.98] text-white font-bold text-[16px] tracking-[-0.01em] transition-all shadow-[0_6px_20px_rgba(71,68,237,.30)]"
+              className="w-full py-4 rounded-[16px] bg-[#000000] hover:bg-[#000000] active:scale-[0.98] text-white font-bold text-[16px] tracking-[-0.01em] transition-all shadow-[0_6px_20px_rgba(71,68,237,.30)]"
             >
               Login
             </button>
