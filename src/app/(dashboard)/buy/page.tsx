@@ -5,19 +5,19 @@ import { AlertCircle, CheckCircle, Copy, Check } from 'lucide-react';
 import { usePrivy } from '@privy-io/react-auth';
 import { AmountKeypad } from '@/components/dashboard/AmountKeypad';
 
-const BUY_RATE = 90;
+const BUY_RATE = 101;
 const PLATFORM_UPI_ID = process.env.NEXT_PUBLIC_PLATFORM_UPI_ID || 'fastxp2p@ybl';
 
 export default function BuyPage() {
   const { getAccessToken } = usePrivy();
   const [step, setStep] = useState<1 | 2>(1);
-  const [amountUsdc, setAmountUsdc] = useState('');
+  const [amountUsdt, setAmountUsdt] = useState('');
   const [upiRef, setUpiRef] = useState('');
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
 
-  const amountInr = Number(amountUsdc || 0) * BUY_RATE;
+  const amountInr = Number(amountUsdt || 0) * BUY_RATE;
 
   const copyUpi = () => {
     navigator.clipboard.writeText(PLATFORM_UPI_ID).catch(() => {});
@@ -33,16 +33,16 @@ export default function BuyPage() {
       const res = await fetch('/api/transactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ type: 'BUY', amountInr, amountUsdt: Number(amountUsdc), upiRef }),
+        body: JSON.stringify({ type: 'BUY', amountInr, amountUsdt: Number(amountUsdt), upiRef }),
       });
       const data = await res.json();
       setResult({
         success: data.success,
         message: data.success
-          ? 'Payment submitted! Your USDC will arrive after verification.'
+          ? 'Payment submitted! Your USDT (BEP-20) will arrive after verification.'
           : data.error || 'Unable to submit payment.',
       });
-      if (data.success) { setAmountUsdc(''); setUpiRef(''); }
+      if (data.success) { setAmountUsdt(''); setUpiRef(''); }
     } catch {
       setResult({ success: false, message: 'Network error. Please try again.' });
     } finally {
@@ -54,8 +54,9 @@ export default function BuyPage() {
   if (step === 1) {
     return (
       <AmountKeypad
-        amount={amountUsdc}
-        onChange={setAmountUsdc}
+        amount={amountUsdt}
+        onChange={setAmountUsdt}
+        currency="USDT"
         actionLabel="Continue"
         onContinue={() => setStep(2)}
       />
@@ -70,15 +71,15 @@ export default function BuyPage() {
       <div className="rounded-[22px] bg-[#f0edff] p-6">
         <p className="text-[14px] font-medium text-[#57505e] uppercase tracking-wider">You'll receive</p>
         <div className="mt-1 flex items-baseline gap-2">
-          <span className="text-[48px] font-extrabold tracking-[-0.06em] text-[#4744ed]">{amountUsdc}</span>
-          <span className="text-[18px] font-semibold text-[#36313a]">USDC</span>
+          <span className="text-[48px] font-extrabold tracking-[-0.06em] text-[#4744ed]">{amountUsdt}</span>
+          <span className="text-[18px] font-semibold text-[#36313a]">USDT</span>
         </div>
         <div className="mt-3 flex items-center justify-between">
           <span className="text-[16px] text-[#514c58]">
             Pay <strong className="text-[#17161c]">₹{amountInr.toFixed(2)}</strong> via UPI
           </span>
           <span className="text-[13px] font-medium text-[#7e78a0] bg-white rounded-full px-3 py-1">
-            Rate: ₹{BUY_RATE}/USDC
+            Rate: ₹{BUY_RATE}/USDT
           </span>
         </div>
       </div>

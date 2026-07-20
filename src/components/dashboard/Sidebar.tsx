@@ -186,12 +186,13 @@ function TradeDock() {
   return (
     <div className="trade-dock">
       <Link href="/buy" className="dock-trade dock-buy">
-        <WalletCards size={17} /> Buy USDC
+        <WalletCards size={17} /> Buy USDT
       </Link>
       <Link href="/sell" className="dock-trade dock-sell">
-        <WalletCards size={17} /> Sell USDC
+        <WalletCards size={17} /> Sell USDT
       </Link>
     </div>
   );
 }
+
 

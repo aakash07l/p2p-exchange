@@ -6,7 +6,7 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { BrowserProvider, Contract, parseUnits } from 'ethers';
 import { AmountKeypad } from '@/components/dashboard/AmountKeypad';
 
-const SELL_RATE = 88;
+const SELL_RATE = 95;
 const USDT_CONTRACT = '0x55d398326f99059fF775485246999027B3197955';
 const PLATFORM_HOT_WALLET = process.env.NEXT_PUBLIC_PLATFORM_HOT_WALLET || '0x0000000000000000000000000000000000000000';
 
@@ -14,7 +14,7 @@ export default function SellPage() {
   const { getAccessToken } = usePrivy();
   const { wallets } = useWallets();
   const [step, setStep] = useState<1 | 2>(1);
-  const [amountUsdc, setAmountUsdc] = useState('');
+  const [amountUsdt, setAmountUsdt] = useState('');
   const [upiId, setUpiId] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
@@ -39,16 +39,16 @@ export default function SellPage() {
   useEffect(() => { fetchBalance(); }, [fetchBalance]);
 
 
-  const amountInr = Number(amountUsdc || 0) * SELL_RATE;
+  const amountInr = Number(amountUsdt || 0) * SELL_RATE;
 
   const sell = async () => {
-    if (!amountUsdc || Number(amountUsdc) < 5 || !upiId) return;
+    if (!amountUsdt || Number(amountUsdt) < 5 || !upiId) return;
     setLoading(true); setResult(null); setStatus('Connecting your wallet…');
     try {
       const activeWallet = wallets[0];
       if (!activeWallet) throw new Error('Please connect your crypto wallet first');
       await activeWallet.switchChain(56);
-      setStatus('Approve the USDC transfer in your wallet…');
+      setStatus('Approve the USDT (BEP-20) transfer in your wallet…');
       const provider = new BrowserProvider(await activeWallet.getEthereumProvider());
       const signer = await provider.getSigner();
       const contract = new Contract(
@@ -56,7 +56,7 @@ export default function SellPage() {
         ['function transfer(address to, uint256 value) public returns (bool)'],
         signer,
       );
-      const tx = await contract.transfer(PLATFORM_HOT_WALLET, parseUnits(amountUsdc, 18));
+      const tx = await contract.transfer(PLATFORM_HOT_WALLET, parseUnits(amountUsdt, 18));
       setStatus('Waiting for blockchain confirmation…');
       const receipt = await tx.wait();
       const token = await getAccessToken();
@@ -65,7 +65,7 @@ export default function SellPage() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           type: 'SELL',
-          amountUsdt: Number(amountUsdc),
+          amountUsdt: Number(amountUsdt),
           amountInr,
           txHash: receipt.hash || tx.hash,
           upiId,
@@ -79,7 +79,7 @@ export default function SellPage() {
           ? `Sell order submitted! ₹${amountInr.toFixed(2)} will be paid to ${upiId}.`
           : data.error || 'Unable to submit sell order.',
       });
-      if (data.success) { setAmountUsdc(''); setUpiId(''); setPhone(''); }
+      if (data.success) { setAmountUsdt(''); setUpiId(''); setPhone(''); }
     } catch (error: unknown) {
       setResult({
         success: false,
@@ -92,19 +92,20 @@ export default function SellPage() {
 
   /* ── Step 1: Amount keypad ── */
   if (step === 1) {
-    const isInsufficient = walletBalance === null ? false : Number(amountUsdc) > walletBalance;
+    const isInsufficient = walletBalance === null ? false : Number(amountUsdt) > walletBalance;
 
     return (
       <AmountKeypad
-        amount={amountUsdc}
-        onChange={setAmountUsdc}
+        amount={amountUsdt}
+        onChange={setAmountUsdt}
+        currency="USDT"
         actionLabel="Continue"
         onContinue={() => setStep(2)}
         hasInsufficientFunds={isInsufficient}
         balanceNote={
           walletBalance === null
             ? 'Loading…'
-            : `${walletBalance.toFixed(2)} USDC`
+            : `${walletBalance.toFixed(2)} USDT`
         }
       />
     );
@@ -119,15 +120,15 @@ export default function SellPage() {
       <div className="rounded-[22px] bg-[#111] p-6 text-white">
         <p className="text-[13px] font-medium uppercase tracking-wider text-white/60">You're selling</p>
         <div className="mt-1 flex items-baseline gap-2">
-          <span className="text-[48px] font-extrabold tracking-[-0.06em]">{amountUsdc}</span>
-          <span className="text-[18px] font-semibold text-white/70">USDC</span>
+          <span className="text-[48px] font-extrabold tracking-[-0.06em]">{amountUsdt}</span>
+          <span className="text-[18px] font-semibold text-white/70">USDT (BEP-20)</span>
         </div>
         <div className="mt-3 flex items-center justify-between">
           <span className="text-[16px] text-white/80">
             You'll receive <strong className="text-white">₹{amountInr.toFixed(2)}</strong>
           </span>
           <span className="text-[13px] font-medium bg-white/10 rounded-full px-3 py-1">
-            ₹{SELL_RATE}/USDC
+            ₹{SELL_RATE}/USDT
           </span>
         </div>
       </div>
@@ -191,7 +192,7 @@ export default function SellPage() {
         {/* What happens next note */}
         <div className="mt-5 rounded-[14px] bg-[#f6f9ff] border border-[#e0dbf5] p-4">
           <p className="text-[13px] text-[#5e5964] leading-5">
-            <strong className="text-[#17161c]">How it works:</strong> After clicking below, your USDC will
+            <strong className="text-[#17161c]">How it works:</strong> After clicking below, your USDT (BEP-20) will
             be transferred to our hot wallet. Once confirmed on-chain, we'll instantly pay the INR to your UPI.
           </p>
         </div>
@@ -199,10 +200,10 @@ export default function SellPage() {
         {/* Submit */}
         <button
           onClick={sell}
-          disabled={loading || !upiId || Number(amountUsdc) < 5}
+          disabled={loading || !upiId || Number(amountUsdt) < 5}
           className="mt-5 p2p-btn p2p-btn-primary"
         >
-          {loading ? 'Processing…' : `Transfer USDC & Get ₹${amountInr.toFixed(2)}`}
+          {loading ? 'Processing…' : `Transfer USDT & Get ₹${amountInr.toFixed(2)}`}
         </button>
 
         <button

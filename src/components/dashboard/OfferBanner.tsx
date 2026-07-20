@@ -4,8 +4,8 @@ import { TrendingUp, TrendingDown, ShieldCheck, ArrowRightLeft, Wallet } from 'l
 import Link from 'next/link';
 
 // Platform rates config
-const BUY_RATE = 90;
-const SELL_RATE = 88;
+const BUY_RATE = 101;
+const SELL_RATE = 95;
 
 export function OfferBanner() {
   return (

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { ArrowDownToLine, ArrowUpFromLine, ChevronRight, Headphones, Info, WalletCards } from 'lucide-react';
 
-const SELL_RATE = 97.66;
+const SELL_RATE = 95;
 
 export default function DashboardPage() {
   const { getAccessToken } = usePrivy();
