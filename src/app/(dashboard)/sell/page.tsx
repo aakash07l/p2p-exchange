@@ -92,12 +92,15 @@ export default function SellPage() {
 
   /* ── Step 1: Amount keypad ── */
   if (step === 1) {
+    const isInsufficient = walletBalance === null ? false : Number(amountUsdc) > walletBalance;
+
     return (
       <AmountKeypad
         amount={amountUsdc}
         onChange={setAmountUsdc}
         actionLabel="Continue"
         onContinue={() => setStep(2)}
+        hasInsufficientFunds={isInsufficient}
         balanceNote={
           walletBalance === null
             ? 'Loading…'
@@ -106,6 +109,7 @@ export default function SellPage() {
       />
     );
   }
+
 
   /* ── Step 2: Payout details ── */
   return (

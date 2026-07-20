@@ -278,74 +278,51 @@ export default function WalletPage() {
           <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-handle" />
 
-            <div className="px-6 pb-2">
-              <div className="flex items-center justify-between mb-5">
+            <div className="px-6 pb-4">
+              <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-[20px] font-bold text-[#17161c]">Deposit</h3>
-                  <p className="text-[14px] text-[#9592a0]">Receive funds to your FastX wallet</p>
+                  <h3 className="text-[20px] font-bold text-[#17161c]">Deposit USDT</h3>
+                  <p className="text-[13px] text-[#9592a0]">BNB Smart Chain (BEP-20)</p>
                 </div>
                 <button onClick={() => setSheet(null)} className="icon-button">
                   <X size={18} />
                 </button>
               </div>
 
-              {/* Deposit Base USDC */}
-              <div className="rounded-[18px] border border-[#e8e5ed] bg-white p-5 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-[#e0e7ff] flex items-center justify-center">
-                    <span className="text-[18px]">🔵</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-[#17161c]">Deposit Base USDC</p>
-                    <p className="text-[13px] text-[#9592a0]">Send USDC on Base to your wallet</p>
-                  </div>
-                </div>
-
+              <div className="rounded-[22px] border border-[#e8e5ed] bg-white p-6 space-y-4 text-center">
                 {depositAddress ? (
                   <>
-                    {/* QR */}
-                    <div className="flex justify-center p-4 bg-white border border-[#e8e5ed] rounded-2xl w-48 h-48 mx-auto">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-[#f0edff] border border-[#e0dbf5] px-4 py-1.5 text-[13px] font-semibold text-[#4744ed]">
+                      🟡 Network: BEP-20 (BNB Smart Chain)
+                    </div>
+
+                    {/* QR Code Centered */}
+                    <div className="flex justify-center p-4 bg-white border border-[#e8e5ed] rounded-2xl w-52 h-52 mx-auto shadow-sm">
                       {qrDataUrl && <img src={qrDataUrl} alt="Deposit QR" className="w-full h-full object-contain" />}
                     </div>
 
-                    {/* Address */}
-                    <div className="flex items-center gap-2 p-3 rounded-[14px] bg-[#f6f9ff] border border-[#e0dbf5]">
-                      <code className="flex-1 text-[11px] text-[#4744ed] font-mono break-all">
-                        {depositAddress}
-                      </code>
-                      <button
-                        onClick={copyAddress}
-                        className="shrink-0 p-2 rounded-xl bg-white border border-[#e0dbf5] hover:bg-[#f0edff] transition"
-                      >
-                        {copied ? <CheckCircle size={14} className="text-emerald-500" /> : <Copy size={14} className="text-[#9592a0]" />}
-                      </button>
-                    </div>
-
-                    {/* Warning */}
-                    <div className="flex items-start gap-2.5 p-3 rounded-[14px] bg-amber-50 border border-amber-200">
-                      <AlertCircle size={15} className="text-amber-500 mt-0.5 shrink-0" />
-                      <p className="text-[12px] text-amber-700 leading-relaxed">
-                        Send only <strong>USDC (Base network)</strong>. Other tokens may be permanently lost.
-                      </p>
-                    </div>
-
-                    {/* Auto-detect */}
-                    {detectResult && (
-                      <div className={`flex items-start gap-2.5 p-3 rounded-[14px] ${
-                        detectResult.success ? 'bg-emerald-50 border border-emerald-200 text-emerald-700' : 'bg-red-50 border border-red-200 text-red-700'
-                      }`}>
-                        {detectResult.success ? <CheckCircle size={14} className="mt-0.5 shrink-0" /> : <AlertCircle size={14} className="mt-0.5 shrink-0" />}
-                        <p className="text-[12px]">{detectResult.message}</p>
+                    {/* Privy Deposit Address */}
+                    <div>
+                      <p className="text-[12px] font-semibold uppercase tracking-wider text-[#9592a0] mb-1.5">Your Deposit Address</p>
+                      <div className="flex items-center gap-2 p-3.5 rounded-[14px] bg-[#f6f9ff] border border-[#e0dbf5]">
+                        <code className="flex-1 text-[12px] text-[#4744ed] font-mono break-all font-semibold">
+                          {depositAddress}
+                        </code>
+                        <button
+                          onClick={copyAddress}
+                          className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-xl bg-white border border-[#e0dbf5] hover:bg-[#f0edff] transition text-[12px] font-semibold text-[#4744ed]"
+                        >
+                          {copied ? <CheckCircle size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                          {copied ? 'Copied' : 'Copy'}
+                        </button>
                       </div>
-                    )}
+                    </div>
 
-                    <button
-                      onClick={detectDeposit}
-                      disabled={detecting}
-                      className="p2p-btn p2p-btn-primary"
-                    >
-                      {detecting ? <><Loader2 size={14} className="animate-spin" /> Scanning…</> : 'Scan for New Deposits'}
-                    </button>
+                    {/* Simple Warning */}
+                    <div className="flex items-center justify-center gap-2 p-3 rounded-[14px] bg-amber-50 border border-amber-200 text-[12px] text-amber-800 font-medium">
+                      <AlertCircle size={15} className="text-amber-500 shrink-0" />
+                      <span>Send only <strong>USDT on BEP-20 (BNB Smart Chain)</strong></span>
+                    </div>
                   </>
                 ) : (
                   <div className="flex flex-col items-center py-10 gap-3 text-[#9592a0]">
@@ -354,30 +331,6 @@ export default function WalletPage() {
                   </div>
                 )}
               </div>
-
-              {/* Deposit from other chains */}
-              <div className="mt-3 rounded-[18px] border border-[#e8e5ed] bg-white p-5">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-11 h-11 rounded-2xl bg-[#f0edff] flex items-center justify-center text-[18px]">
-                    ⛓️
-                  </div>
-                  <div>
-                    <p className="font-bold text-[#17161c]">Deposit from other chains</p>
-                    <p className="text-[13px] text-[#9592a0]">Bridge USDC to Base from supported networks</p>
-                  </div>
-                </div>
-                <div className="flex gap-2 flex-wrap">
-                  {CHAINS.map((chain, i) => (
-                    <span key={chain} className="flex items-center gap-1.5 rounded-full bg-[#f5f5f8] border border-[#e8e5ed] px-3 py-1.5 text-[12px] font-medium text-[#504a56]">
-                      {CHAIN_ICONS[i]} {chain}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <button onClick={() => setSheet(null)} className="mt-5 p2p-btn" style={{background:'#111', color:'white'}}>
-                Close
-              </button>
             </div>
           </div>
         </div>
@@ -392,9 +345,9 @@ export default function WalletPage() {
             <div className="px-6 pb-2 space-y-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-[20px] font-bold text-[#17161c]">Withdraw USDC</h3>
+                  <h3 className="text-[20px] font-bold text-[#17161c]">Withdraw USDT</h3>
                   <p className="text-[14px] text-[#9592a0]">
-                    Available: <strong className="text-[#17161c]">{walletData?.usdtBalance?.toFixed(2) || '0.00'} USDC</strong>
+                    Available: <strong className="text-[#17161c]">{walletData?.usdtBalance?.toFixed(2) || '0.00'} USDT</strong>
                   </p>
                 </div>
                 <button onClick={() => setSheet(null)} className="icon-button">
@@ -405,18 +358,18 @@ export default function WalletPage() {
               {/* Amount */}
               <div>
                 <label className="block text-[13px] font-semibold text-[#3d3843] mb-2">
-                  Amount (USDC)
+                  Amount (USDT)
                 </label>
                 <div className="relative">
                   <input
                     type="number"
-                    placeholder="Min. 5 USDC"
+                    placeholder="Min. 5 USDT"
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(e.target.value)}
                     className="p2p-input pr-20"
                   />
                   <button
-                    onClick={() => setWithdrawAmount(String(Math.max(0, (walletData?.usdtBalance || 0) - 1)))}
+                    onClick={() => setWithdrawAmount(String(walletData?.usdtBalance || 0))}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] font-bold text-[#4744ed] bg-[#f0edff] border border-[#d7d0f0] px-2.5 py-1.5 rounded-lg"
                   >
                     MAX
@@ -442,16 +395,16 @@ export default function WalletPage() {
               <div className="rounded-[14px] bg-[#f6f9ff] border border-[#e0dbf5] p-4 text-[13px] space-y-2">
                 <div className="flex justify-between text-[#9592a0]">
                   <span>Network</span>
-                  <span className="font-semibold text-[#17161c]">BNB Smart Chain</span>
+                  <span className="font-semibold text-[#17161c]">BNB Smart Chain (BEP-20)</span>
                 </div>
                 <div className="flex justify-between text-[#9592a0]">
                   <span>Network Fee</span>
-                  <span className="font-semibold text-[#17161c]">1 USDC</span>
+                  <span className="font-bold text-emerald-600">0 USDT (Free)</span>
                 </div>
                 <div className="flex justify-between border-t border-[#e0dbf5] pt-2">
                   <span className="text-[#9592a0]">Net Payout</span>
                   <span className="font-bold text-emerald-600">
-                    {Math.max(0, parseFloat(withdrawAmount || '0') - 1).toFixed(2)} USDC
+                    {parseFloat(withdrawAmount || '0').toFixed(2)} USDT
                   </span>
                 </div>
               </div>

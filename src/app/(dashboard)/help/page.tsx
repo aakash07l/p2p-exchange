@@ -1,18 +1,116 @@
-import { ArrowRight, Bot, MessageSquareMore, Play, Search } from 'lucide-react';
+'use client';
+
+import { useState } from 'react';
+import { ArrowRight, ChevronDown, MessageSquareMore, Search, ShieldCheck } from 'lucide-react';
+
+const FAQS = [
+  {
+    q: 'How does FastX P2P protect Indian transactions?',
+    a: 'FastX P2P uses smart contract escrow and direct peer-to-peer UPI payments. Funds are locked safely in escrow until payment confirmation, ensuring zero bank freeze risks.',
+  },
+  {
+    q: 'How long does a Buy or Sell order take?',
+    a: 'Most orders are completed within 2 to 5 minutes once payment is verified via UPI and confirmed on-chain.',
+  },
+  {
+    q: 'What network is supported for USDT deposits & withdrawals?',
+    a: 'We support BNB Smart Chain (BEP-20) for instant, 0-fee USDT transfers directly to/from your Privy embedded wallet.',
+  },
+  {
+    q: 'How do I deposit USDT to my wallet?',
+    a: 'Go to Wallet → Deposit, scan the BEP-20 QR code or copy your Privy deposit address, and send USDT from any exchange or wallet.',
+  },
+  {
+    q: 'What should I do if a payment is delayed?',
+    a: 'Ensure you enter the correct 12-digit UTR/Reference number. You can also chat directly with our 24/7 support team.',
+  },
+];
 
 export default function HelpPage() {
+  const [search, setSearch] = useState('');
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const filtered = FAQS.filter(
+    (f) => f.q.toLowerCase().includes(search.toLowerCase()) || f.a.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="animate-slide-up pt-12 pb-10">
-      <section className="relative h-[165px] overflow-hidden rounded-[20px] bg-[radial-gradient(circle_at_70%_30%,#3c6ee4,transparent_34%),linear-gradient(125deg,#292079,#140b50)] p-6 text-white"><div className="absolute -left-6 -top-16 h-48 w-48 rotate-12 rounded-[30px] bg-[#7e6bf7]/30"/><span className="relative flex h-16 w-16 items-center justify-center rounded-full border-4 border-white"><Play className="ml-1" fill="currentColor" size={28}/></span><p className="relative mt-3 text-[19px] font-bold">Quick App Tour</p></section>
-      <section className="mt-12 flex items-center justify-between rounded-[18px] bg-[#f5f4f5] p-6"><strong className="text-[19px]">Need help?</strong><button className="flex items-center gap-3 rounded-2xl border border-[#5447c7] px-5 py-3 text-[18px] font-semibold text-[#5145c8]"><MessageSquareMore size={22}/>Chat with us <ArrowRight size={19}/></button></section>
-      <button className="mt-7 flex w-full items-center gap-4 rounded-2xl bg-[#edf5ff] p-5 text-left text-[18px] font-semibold text-[#5a4bd0]"><Bot size={23}/>Ask AI Assistant <ArrowRight className="ml-auto" size={20}/></button>
-      <section className="mt-16"><div className="flex items-center justify-between"><h2 className="text-[26px] font-bold tracking-[-.05em]">Helpful video guides</h2><button className="text-[17px] text-[#125fe8]">See all</button></div><div className="mt-7 grid grid-cols-2 gap-6"><Guide title="App Tour" body="FastX P2P in 60 seconds"/><Guide title="Direct Deposit" body="How to Deposit Supported Tokens"/></div></section>
-      <section className="mt-16"><h2 className="text-[27px] font-bold tracking-[-.05em]">FAQs</h2><label className="mt-7 flex items-center gap-3 rounded-xl border border-[#e3e0e6] bg-[#fafafa] px-5 py-4 text-[18px] text-[#77717d]"><input className="min-w-0 flex-1 bg-transparent outline-none" placeholder="Type your question here..."/><Search size={24} className="text-[#37323d]"/></label></section>
-      <button className="fixed bottom-7 right-7 flex h-16 w-16 items-center justify-center rounded-full bg-[#125fe8] text-white shadow-[0_7px_20px_rgba(81,69,239,.35)]"><MessageSquareMore size={30}/></button>
+    <div className="animate-slide-up pb-10 space-y-8">
+      {/* Support Hero */}
+      <section className="rounded-[24px] bg-gradient-to-br from-[#0f0f1a] via-[#1a1540] to-[#2a1f6e] p-6 text-white shadow-md relative overflow-hidden">
+        <div className="flex items-center gap-3 mb-2">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-[#a99dff]">
+            <ShieldCheck size={22} />
+          </span>
+          <div>
+            <h1 className="text-[20px] font-bold">FastX Help & Support</h1>
+            <p className="text-[13px] text-white/60">24/7 assistance for all your trades</p>
+          </div>
+        </div>
+        <p className="mt-3 text-[14px] leading-relaxed text-white/70">
+          Have questions about deposits, withdrawals, or UPI payments? Find answers below or reach out to our team.
+        </p>
+      </section>
+
+      {/* Support Contact Button */}
+      <section className="rounded-[20px] bg-white border border-[#e8e5ed] p-5 flex items-center justify-between shadow-sm">
+        <div>
+          <strong className="block text-[16px] text-[#17161c]">Need live help?</strong>
+          <p className="text-[13px] text-[#9592a0]">Contact support directly</p>
+        </div>
+        <button className="flex items-center gap-2 rounded-xl bg-[#4744ed] px-4 py-2.5 text-[14px] font-bold text-white hover:bg-[#3a37d4] transition">
+          <MessageSquareMore size={18} /> Chat <ArrowRight size={16} />
+        </button>
+      </section>
+
+      {/* FAQ Search & Accordion Section */}
+      <section className="space-y-4">
+        <h2 className="text-[22px] font-bold tracking-[-0.04em] text-[#17161c]">Frequently Asked Questions</h2>
+
+        {/* Search Input */}
+        <div className="flex items-center gap-3 rounded-[16px] border border-[#e8e5ed] bg-white px-4 py-3 shadow-sm">
+          <Search size={20} className="text-[#9592a0] shrink-0" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search questions..."
+            className="w-full text-[15px] outline-none text-[#17161c] bg-transparent"
+          />
+        </div>
+
+        {/* Accordions */}
+        <div className="space-y-3 pt-2">
+          {filtered.length === 0 ? (
+            <p className="text-[14px] text-[#9592a0] text-center py-6">No matching questions found.</p>
+          ) : (
+            filtered.map((item, index) => {
+              const isOpen = openIndex === index;
+              return (
+                <div
+                  key={item.q}
+                  className="rounded-[18px] border border-[#e8e5ed] bg-white overflow-hidden transition-all shadow-sm"
+                >
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? null : index)}
+                    className="flex w-full items-center justify-between gap-4 p-5 text-left text-[16px] font-semibold text-[#17161c]"
+                  >
+                    <span>{item.q}</span>
+                    <ChevronDown
+                      size={20}
+                      className={`text-[#4744ed] shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="px-5 pb-5 pt-0 text-[14px] leading-relaxed text-[#504a56] border-t border-[#f2f0f5]">
+                      {item.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </section>
     </div>
   );
-}
-
-function Guide({ title, body }: { title: string; body: string }) {
-  return <div><div className="flex aspect-[1.33] flex-col justify-end rounded-xl bg-[linear-gradient(135deg,#140d5d,#3525a8,#1e49bc)] p-3 text-white shadow-[0_4px_9px_rgba(38,23,124,.2)]"><small className="text-[10px] text-[#bbb5ff]">App Tour</small><strong className="text-[15px] leading-5">{body}</strong></div><p className="mt-3 text-[17px] font-medium">{title}</p></div>;
 }

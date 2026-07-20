@@ -188,18 +188,10 @@ function TradeDock() {
       <Link href="/buy" className="dock-trade dock-buy">
         <WalletCards size={17} /> Buy USDC
       </Link>
-      <Link
-        href="/wallet?tab=deposit"
-        className="dock-scan-wrap"
-      >
-        <span className="dock-scan-circle">
-          <ScanLine size={34} />
-        </span>
-        <span className="dock-scan-label">Scan & Pay</span>
-      </Link>
       <Link href="/sell" className="dock-trade dock-sell">
         <WalletCards size={17} /> Sell USDC
       </Link>
     </div>
   );
 }
+

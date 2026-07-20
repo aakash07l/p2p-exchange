@@ -10,6 +10,7 @@ interface AmountKeypadProps {
   disabled?: boolean;
   balanceNote?: string;
   currency?: string;
+  hasInsufficientFunds?: boolean;
 }
 
 export function AmountKeypad({
@@ -20,6 +21,7 @@ export function AmountKeypad({
   disabled = false,
   balanceNote,
   currency = 'USDC',
+  hasInsufficientFunds = false,
 }: AmountKeypadProps) {
   const append = (key: string) => {
     if (key === '.' && amount.includes('.')) return;
@@ -42,7 +44,7 @@ export function AmountKeypad({
             className="font-extrabold leading-none tracking-[-0.07em]"
             style={{
               fontSize: amount.length > 5 ? '52px' : '68px',
-              color: '#a093f6',
+              color: hasInsufficientFunds ? '#ef4444' : '#a093f6',
             }}
           >
             {amount || '0'}
@@ -64,12 +66,19 @@ export function AmountKeypad({
         {balanceNote && (
           <p className="mt-4 text-[16px] text-[#504b55]">
             Available Balance:{' '}
-            <strong className="font-semibold text-[#4744ed]">{balanceNote}</strong>
+            <strong className={`font-semibold ${hasInsufficientFunds ? 'text-red-500' : 'text-[#4744ed]'}`}>
+              {balanceNote}
+            </strong>
           </p>
         )}
+
+        {/* Insufficient Funds warning */}
+        {hasInsufficientFunds && Number(amount) > 0 && (
+          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-red-50 border border-red-200 px-4 py-1.5 text-[13px] font-bold text-red-600 animate-pulse">
+            ⚠️ Insufficient Funds in Privy Wallet
+          </div>
+        )}
       </div>
-
-
 
       {/* Numeric keypad */}
       <div className="mt-6 grid grid-cols-3">
@@ -103,13 +112,14 @@ export function AmountKeypad({
       <button
         type="button"
         onClick={onContinue}
-        disabled={disabled || !Number(amount)}
+        disabled={disabled || !Number(amount) || hasInsufficientFunds}
         className="mt-6 w-full rounded-[16px] py-[18px] text-[18px] font-bold text-white transition-all
           disabled:bg-[#b3c6fb] disabled:cursor-not-allowed
           enabled:bg-[#4744ed] enabled:shadow-[0_6px_16px_rgba(71,68,237,.28)] enabled:hover:bg-[#3a37d4]"
       >
-        {actionLabel}
+        {hasInsufficientFunds ? 'Insufficient Funds' : actionLabel}
       </button>
     </section>
   );
 }
+
