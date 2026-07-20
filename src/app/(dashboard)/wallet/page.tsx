@@ -276,30 +276,40 @@ export default function WalletPage() {
       {sheet === 'deposit' && (
         <div className="sheet-overlay" onClick={() => setSheet(null)}>
           <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="sheet-handle mb-3" />
+
+            {/* DEPOSIT Header right inside the card above QR */}
+            <div className="flex items-center justify-between border-b border-[#f0edff] pb-3 mb-4">
+              <h3 className="text-[20px] font-extrabold text-[#17161c] tracking-tight">DEPOSIT USDT</h3>
+              <button onClick={() => setSheet(null)} className="icon-button">
+                <X size={18} />
+              </button>
+            </div>
+
             {depositAddress ? (
               <div className="space-y-4 text-center">
 
                 {/* QR Code Container */}
-                <div className="flex justify-center pt-1">
-                  <div className="p-4 bg-white border border-[#e8e5ed] rounded-[24px] shadow-lg flex items-center justify-center">
+                <div className="flex justify-center py-1">
+                  <div className="p-3 bg-white border border-[#e8e5ed] rounded-[24px] shadow-md flex items-center justify-center mx-auto">
                     {qrDataUrl && (
                       <img
                         src={qrDataUrl}
                         alt="Deposit QR Code"
-                        className="w-56 h-56 sm:w-64 sm:h-64 object-contain block mx-auto"
+                        className="w-48 h-48 sm:w-56 sm:h-56 object-contain block mx-auto"
                       />
                     )}
                   </div>
                 </div>
 
                 {/* Address & Copy Container */}
-                <div className="rounded-[24px] bg-[#f2efff] border border-[#e0dbf5] p-5 text-center space-y-3">
-                  <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-[#6b6575]">
+                <div className="rounded-[24px] bg-[#f2efff] border border-[#e0dbf5] p-4 text-center space-y-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6b6575]">
                     YOUR BEP-20 DEPOSIT ADDRESS
                   </p>
 
-                  <div className="rounded-[18px] bg-white border border-[#e0dbf5] px-4 py-3.5 shadow-sm">
-                    <p className="text-[15px] sm:text-[16px] font-bold font-mono text-[#17161c] break-all leading-snug tracking-tight text-center select-all">
+                  <div className="rounded-[16px] bg-white border border-[#e0dbf5] px-3.5 py-3 shadow-sm">
+                    <p className="text-[14px] sm:text-[15px] font-bold font-mono text-[#17161c] break-all leading-snug tracking-tight text-center select-all">
                       {depositAddress}
                     </p>
                   </div>
