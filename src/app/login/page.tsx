@@ -89,11 +89,9 @@ export default function LoginPage() {
             </div>
 
             <h1 className="text-[22px] font-bold tracking-[-0.04em] text-[#17161c]">
-              Swap USDC ↔ {sel.code} instantly
+              Swap USDT ↔ {sel.code} instantly
             </h1>
-            <p className="mt-1.5 text-[14px] text-[#9592a0]">
-              P2P exchange · No bank freezes · Powered by Privy
-            </p>
+            
           </div>
 
           {/* Controls */}
@@ -156,7 +154,7 @@ export default function LoginPage() {
             <button
               id="login-button"
               onClick={() => login()}
-              className="w-full py-4 rounded-[16px] bg-[#4744ed] hover:bg-[#3a37d4] active:scale-[0.98] text-white font-bold text-[16px] tracking-[-0.01em] transition-all shadow-[0_6px_20px_rgba(71,68,237,.30)]"
+              className="w-full py-4 rounded-[16px] bg-[#4744ed] hover:bg-[#000000] active:scale-[0.98] text-white font-bold text-[16px] tracking-[-0.01em] transition-all shadow-[0_6px_20px_rgba(71,68,237,.30)]"
             >
               Login
             </button>
@@ -165,7 +163,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <p className="text-center text-[12px] text-[#9592a0] mt-5">
-          🔒 Secured by Privy · Zero bank freeze risk
+          🔒 Secured by Privy
         </p>
       </div>
     </div>
