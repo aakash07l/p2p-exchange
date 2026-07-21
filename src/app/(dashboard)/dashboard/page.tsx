@@ -60,30 +60,6 @@ export default function DashboardPage() {
           </Link>
         ))}
       </section>
-
-      {/* P2P Image Banner */}
-      <section className="mt-8 overflow-hidden rounded-[22px] border border-[#e8e5ed] shadow-[0_4px_16px_rgba(0,0,0,0.06)] bg-black">
-        <img
-          src="/images/p2p-banner.jpg"
-          alt="Peer-to-Peer P2P Trading"
-          className="w-full h-auto max-h-[180px] object-cover"
-        />
-      </section>
-
-
-      {/* Refer & Earn */}
-      <section className="mt-2 rounded-[22px] bg-[#f6f5fb] p-6 shadow-[0_2px_8px_rgba(40,29,111,.07)]">
-        <h2 className="text-[21px] font-bold tracking-[-0.04em]">Refer &amp; Earn</h2>
-        <p className="mt-3 text-[16px] leading-6 text-[#514c58]">
-          Earn 0.5% on every trade your friends make. Invite people you trust &amp; start earning today!
-        </p>
-        <Link
-          href="/referrals"
-          className="mt-5 flex items-center gap-2 text-[16px] font-semibold text-[#4744ed]"
-        >
-          Invite friends <ChevronRight size={16} />
-        </Link>
-      </section>
-    </div>
+</div>
   );
 }
