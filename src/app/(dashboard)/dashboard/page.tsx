@@ -27,10 +27,10 @@ export default function DashboardPage() {
     <div className="animate-slide-up pb-8">
       {/* Sell price pill */}
       <div className="mx-auto mb-10 flex w-fit items-center gap-3 rounded-full border border-[#d7d1ff] bg-white px-5 py-2 shadow-[0_2px_6px_rgba(80,64,200,.08)]">
-        <span className="h-3.5 w-3.5 rounded-full bg-[#4744ed] shadow-[0_0_0_4px_#e7e0ff]" />
+        <span className="h-3.5 w-3.5 rounded-full bg-[#000000] shadow-[0_0_0_4px_#e7e0ff]" />
         <span className="text-[15px] font-medium text-[#47414f]">Sell Price</span>
         <strong className="ml-6 text-[15px]">₹{SELL_RATE.toFixed(2)}</strong>
-        <Info size={16} className="text-[#4744ed]" />
+        <Info size={16} className="text-[#000000]" />
       </div>
 
       {/* Balance display */}
