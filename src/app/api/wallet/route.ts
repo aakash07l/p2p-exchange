@@ -29,7 +29,26 @@ export async function GET(req: NextRequest) {
     if (wallet && wallet.address) {
       try {
         const onChainUsdt = await getUsdtBalance(wallet.address);
-        if (onChainUsdt > 0 || onChainUsdt !== wallet.usdtBalance) {
+        const diff = onChainUsdt - wallet.usdtBalance;
+
+        // Auto-create DEPOSIT transaction if new funds received on-chain
+        if (diff > 0.001) {
+          await prisma.transaction.create({
+            data: {
+              userId: user.id,
+              type: 'DEPOSIT',
+              status: 'COMPLETED',
+              asset: 'USDT',
+              amount: diff,
+              fromAddress: 'External Wallet',
+              toAddress: wallet.address,
+              depositAddress: wallet.address,
+              notes: 'BEP-20 USDT deposit detected on BNB Smart Chain',
+            },
+          });
+        }
+
+        if (onChainUsdt !== wallet.usdtBalance) {
           wallet = await prisma.wallet.update({
             where: { userId: user.id },
             data: { usdtBalance: onChainUsdt },

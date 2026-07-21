@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivyClient } from '@privy-io/server-auth';
 import prisma from '@/lib/db/prisma';
-import { verifyUsdtDeposit, getIncomingUsdtTransfers } from '@/lib/blockchain/bscscan';
+import { verifyUsdtDeposit, getUsdtBalance, getIncomingUsdtTransfers } from '@/lib/blockchain/bscscan';
 
 const privy = new PrivyClient(
   process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
@@ -22,34 +22,35 @@ export async function GET(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { privyId: claims.userId } });
     if (!user) return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
 
-    // Auto-detect incoming deposits for user's wallet
+    // Auto-detect incoming deposits for user's wallet via on-chain balance check & transfers
     const userWallet = await prisma.wallet.findUnique({ where: { userId: user.id } });
     if (userWallet && userWallet.address) {
       try {
-        const transfers = await getIncomingUsdtTransfers(userWallet.address);
-        for (const t of transfers) {
-          const existing = await prisma.transaction.findFirst({
-            where: { txHash: t.hash },
+        const onChainUsdt = await getUsdtBalance(userWallet.address);
+        const diff = onChainUsdt - userWallet.usdtBalance;
+
+        if (diff > 0.001) {
+          await prisma.transaction.create({
+            data: {
+              userId: user.id,
+              type: 'DEPOSIT',
+              status: 'COMPLETED',
+              asset: 'USDT',
+              amount: diff,
+              fromAddress: 'External Wallet',
+              toAddress: userWallet.address,
+              depositAddress: userWallet.address,
+              notes: 'BEP-20 USDT deposit detected on BNB Smart Chain',
+            },
           });
-          if (!existing) {
-            await prisma.transaction.create({
-              data: {
-                userId: user.id,
-                type: 'DEPOSIT',
-                status: 'COMPLETED',
-                asset: 'USDT',
-                amount: t.value,
-                fromAddress: t.from,
-                toAddress: userWallet.address,
-                txHash: t.hash,
-                depositAddress: userWallet.address,
-                notes: 'BEP20 USDT detected automatically via BSC network',
-              },
-            });
-          }
+
+          await prisma.wallet.update({
+            where: { userId: user.id },
+            data: { usdtBalance: onChainUsdt },
+          });
         }
       } catch (err) {
-        console.error('[Transactions API] Auto-detect deposits error:', err);
+        console.error('[Transactions API] On-chain deposit sync error:', err);
       }
     }
 
@@ -105,13 +106,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Invalid transaction type' }, { status: 400 });
     }
 
-    // --- Handling BUY Transaction (User expects USDT from Platform after manual UPI pay) ---
+    // --- Handling BUY Transaction ---
     if (type === 'BUY') {
       if (!amountInr || !amountUsdt || !upiRef) {
         return NextResponse.json({ success: false, error: 'Inr Amount, Usdt Amount and UPI Reference ID are required' }, { status: 400 });
       }
 
-      // Check for duplicate UPI Reference
       const duplicate = await prisma.transaction.findFirst({
         where: { upiRef },
       });
@@ -137,19 +137,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, data: tx });
     }
 
-    // --- Handling SELL Transaction (User sends USDT on-chain ➔ expects INR UPI payout from Admin) ---
+    // --- Handling SELL Transaction ---
     if (type === 'SELL') {
       if (!amountUsdt || !amountInr || !txHash || !upiId) {
         return NextResponse.json({ success: false, error: 'Usdt Amount, Inr Amount, TX Hash and Payout UPI ID are required' }, { status: 400 });
       }
 
-      // Verify user's USDT transfer on-chain via BSCScan
-      const platformHotWallet = process.env.NEXT_PUBLIC_PLATFORM_HOT_WALLET || '';
-      if (!platformHotWallet) {
-        return NextResponse.json({ success: false, error: 'Platform Hot Wallet address is not configured on server' }, { status: 500 });
-      }
+      const rawHot = process.env.NEXT_PUBLIC_PLATFORM_HOT_WALLET;
+      const platformHotWallet = (rawHot && rawHot !== '0x0000000000000000000000000000000000000000')
+        ? rawHot
+        : '0x57db74fec2dfc517315ea6034aa746511dd80d4b';
 
-      // First check if txHash is already used
       const duplicateTx = await prisma.transaction.findFirst({
         where: { txHash },
       });

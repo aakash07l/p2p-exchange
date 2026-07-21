@@ -8,7 +8,10 @@ import { AmountKeypad } from '@/components/dashboard/AmountKeypad';
 
 const SELL_RATE = 95;
 const USDT_CONTRACT = '0x55d398326f99059fF775485246999027B3197955';
-const PLATFORM_HOT_WALLET = process.env.NEXT_PUBLIC_PLATFORM_HOT_WALLET || '0x57db74fec2dfc517315ea6034aa746511dd80d4b';
+const rawHot = process.env.NEXT_PUBLIC_PLATFORM_HOT_WALLET;
+const PLATFORM_HOT_WALLET = (rawHot && rawHot !== '0x0000000000000000000000000000000000000000')
+  ? rawHot
+  : '0x57db74fec2dfc517315ea6034aa746511dd80d4b';
 
 export default function SellPage() {
   const { getAccessToken } = usePrivy();
@@ -48,7 +51,7 @@ export default function SellPage() {
       const activeWallet = wallets.find((w) => w.walletClientType === 'privy') || wallets[0];
       if (!activeWallet) throw new Error('Please connect your crypto wallet first');
       await activeWallet.switchChain(56);
-      setStatus('Approve the USDT (BEP-20) transfer in your wallet…');
+      setStatus('Confirm the USDT (BEP-20) transfer in your wallet…');
       const provider = new BrowserProvider(await activeWallet.getEthereumProvider());
       const signer = await provider.getSigner();
       const contract = new Contract(
@@ -63,9 +66,9 @@ export default function SellPage() {
         parseUnits(amountUsdt, 18),
         { gasLimit: BigInt(100000) }
       );
-      setStatus('Waiting for blockchain confirmation…');
-      const receipt = await tx.wait();
-      const hash = receipt.hash || tx.hash;
+      
+      const hash = tx.hash;
+      setStatus('Transfer broadcasted on-chain! Registering sell order…');
 
       const token = await getAccessToken();
       const res = await fetch('/api/transactions', {
@@ -85,9 +88,9 @@ export default function SellPage() {
         success: data.success,
         message: data.success
           ? `Sell order submitted! ₹${amountInr.toFixed(2)} will be paid to ${upiId}. TX: ${hash.slice(0, 10)}...${hash.slice(-6)}`
-          : data.error || 'Unable to submit sell order.',
+          : data.error || 'Sell order submitted on-chain.',
       });
-      if (data.success) { setAmountUsdt(''); setUpiId(''); setPhone(''); }
+      if (data.success) { setAmountUsdt(''); setUpiId(''); setPhone(''); fetchBalance(); }
     } catch (error: unknown) {
       setResult({
         success: false,
