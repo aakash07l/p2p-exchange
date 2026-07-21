@@ -46,12 +46,9 @@ export default function HelpPage() {
           </span>
           <div>
             <h1 className="text-[20px] font-bold">FastX Help & Support</h1>
-            <p className="text-[13px] text-white/60">24/7 assistance for all your trades</p>
+            <p className="text-[13px] text-white/60">24/7 assistance</p>
           </div>
         </div>
-        <p className="mt-3 text-[14px] leading-relaxed text-white/70">
-          Have questions about deposits, withdrawals, or UPI payments? Find answers below or reach out to our team.
-        </p>
       </section>
 
       <div style={{ height: '24px' }} />
@@ -60,7 +57,7 @@ export default function HelpPage() {
       <section className="rounded-[20px] bg-white border border-[#e8e5ed] p-5 flex items-center justify-between shadow-sm">
         <div>
           <strong className="block text-[16px] text-[#17161c]">Need live help?</strong>
-          <p className="text-[13px] text-[#9592a0]">Contact support directly</p>
+          <p className="text-[13px] text-[#9592a0]">Contact directly</p>
         </div>
         <button className="flex items-center gap-2 rounded-xl bg-[#059669] px-4 py-2.5 text-[14px] font-bold text-white hover:bg-[#047857] transition">
           <MessageSquareMore size={18} /> Chat <ArrowRight size={16} />
