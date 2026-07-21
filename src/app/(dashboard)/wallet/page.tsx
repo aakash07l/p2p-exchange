@@ -6,6 +6,7 @@ import {
   Wallet, ArrowDownToLine, ArrowUpFromLine, X,
 } from 'lucide-react';
 import { usePrivy, useCreateWallet, useWallets } from '@privy-io/react-auth';
+import { BrowserProvider, Contract, parseUnits } from 'ethers';
 import QRCode from 'qrcode';
 
 type Sheet = null | 'deposit' | 'withdraw' | 'usdt_actions' | 'bnb_actions';
@@ -131,24 +132,49 @@ export default function WalletPage() {
   };
 
   const withdraw = async () => {
-    if (!withdrawAmount || !withdrawAddr) return;
+    if (!withdrawAmount || !withdrawAddr || parseFloat(withdrawAmount) < 1) return;
     setLoading(true); setWithdrawResult(null);
     try {
+      const activeWallet = wallets.find((w) => w.walletClientType === 'privy') || wallets[0];
+      if (!activeWallet) throw new Error('Please connect your crypto wallet first');
+      await activeWallet.switchChain(56);
+
+      const provider = new BrowserProvider(await activeWallet.getEthereumProvider());
+      const signer = await provider.getSigner();
+      const contract = new Contract(
+        '0x55d398326f99059fF775485246999027B3197955',
+        ['function transfer(address to, uint256 value) public returns (bool)'],
+        signer,
+      );
+
+      // Explicit gasLimit 100000n prevents Out Of Gas reverts on BSC Mainnet
+      const tx = await contract.transfer(
+        withdrawAddr,
+        parseUnits(withdrawAmount, 18),
+        { gasLimit: 100000n }
+      );
+
+      const receipt = await tx.wait();
+      const hash = receipt.hash || tx.hash;
+
       const h = await authHeaders();
       const r = await fetch('/api/wallet/withdraw', {
         method: 'POST', headers: h,
-        body: JSON.stringify({ asset: 'USDT', amount: parseFloat(withdrawAmount), toAddress: withdrawAddr }),
+        body: JSON.stringify({ asset: 'USDT', amount: parseFloat(withdrawAmount), toAddress: withdrawAddr, txHash: hash }),
       });
       const d = await r.json();
       setWithdrawResult({
         success: d.success,
         message: d.success
-          ? `Withdrawal of ${withdrawAmount} USDT submitted! TX: ${d.data?.txHash?.slice(0, 20)}…`
-          : d.error,
+          ? `Withdrawal of ${withdrawAmount} USDT submitted! TX: ${hash.slice(0, 10)}...${hash.slice(-6)}`
+          : d.error || 'Withdrawal failed.',
       });
       if (d.success) { setWithdrawAmount(''); setWithdrawAddr(''); loadWallet(); }
-    } catch {
-      setWithdrawResult({ success: false, message: 'Network error. Please try again.' });
+    } catch (err: unknown) {
+      setWithdrawResult({
+        success: false,
+        message: err instanceof Error ? err.message : 'Transaction failed. Please retry.',
+      });
     } finally {
       setLoading(false);
     }

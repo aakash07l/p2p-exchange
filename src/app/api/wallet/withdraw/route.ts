@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'User or wallet not found' }, { status: 404 });
     }
 
-    const { asset, amount, toAddress, upiId } = await req.json();
+    const { asset, amount, toAddress, upiId, txHash } = await req.json();
 
     // Validate inputs
     if (!asset || !amount || amount < 1) {
@@ -67,11 +67,12 @@ export async function POST(req: NextRequest) {
         data: {
           userId: user.id,
           type: 'WITHDRAW',
-          status: 'PROCESSING',
+          status: txHash ? 'COMPLETED' : 'PROCESSING',
           asset,
           amount,
           fee: withdrawResult.fee,
           toAddress: toAddress || upiId,
+          txHash: txHash || undefined,
           externalRef: withdrawResult.transactionId,
           upiRef: upiId,
         },
@@ -82,7 +83,10 @@ export async function POST(req: NextRequest) {
       success: true,
       data: {
         ...withdrawResult,
-        message: 'Withdrawal initiated. Funds will arrive within ' + withdrawResult.estimatedTime,
+        txHash: txHash || withdrawResult.transactionId,
+        message: txHash
+          ? `Withdrawal confirmed on-chain! TX: ${txHash}`
+          : 'Withdrawal initiated. Funds will arrive within ' + withdrawResult.estimatedTime,
       },
     });
   } catch (error) {

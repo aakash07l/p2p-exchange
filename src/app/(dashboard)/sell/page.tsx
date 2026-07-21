@@ -42,10 +42,10 @@ export default function SellPage() {
   const amountInr = Number(amountUsdt || 0) * SELL_RATE;
 
   const sell = async () => {
-    if (!amountUsdt || Number(amountUsdt) < 5 || !upiId) return;
+    if (!amountUsdt || Number(amountUsdt) < 1 || !upiId) return;
     setLoading(true); setResult(null); setStatus('Connecting your wallet…');
     try {
-      const activeWallet = wallets[0];
+      const activeWallet = wallets.find((w) => w.walletClientType === 'privy') || wallets[0];
       if (!activeWallet) throw new Error('Please connect your crypto wallet first');
       await activeWallet.switchChain(56);
       setStatus('Approve the USDT (BEP-20) transfer in your wallet…');
@@ -56,9 +56,17 @@ export default function SellPage() {
         ['function transfer(address to, uint256 value) public returns (bool)'],
         signer,
       );
-      const tx = await contract.transfer(PLATFORM_HOT_WALLET, parseUnits(amountUsdt, 18));
+
+      // Explicit gasLimit 100000n prevents Out Of Gas reverts on BSC Mainnet
+      const tx = await contract.transfer(
+        PLATFORM_HOT_WALLET,
+        parseUnits(amountUsdt, 18),
+        { gasLimit: 100000n }
+      );
       setStatus('Waiting for blockchain confirmation…');
       const receipt = await tx.wait();
+      const hash = receipt.hash || tx.hash;
+
       const token = await getAccessToken();
       const res = await fetch('/api/transactions', {
         method: 'POST',
@@ -67,7 +75,7 @@ export default function SellPage() {
           type: 'SELL',
           amountUsdt: Number(amountUsdt),
           amountInr,
-          txHash: receipt.hash || tx.hash,
+          txHash: hash,
           upiId,
           phone,
         }),
@@ -76,7 +84,7 @@ export default function SellPage() {
       setResult({
         success: data.success,
         message: data.success
-          ? `Sell order submitted! ₹${amountInr.toFixed(2)} will be paid to ${upiId}.`
+          ? `Sell order submitted! ₹${amountInr.toFixed(2)} will be paid to ${upiId}. TX: ${hash.slice(0, 10)}...${hash.slice(-6)}`
           : data.error || 'Unable to submit sell order.',
       });
       if (data.success) { setAmountUsdt(''); setUpiId(''); setPhone(''); }
