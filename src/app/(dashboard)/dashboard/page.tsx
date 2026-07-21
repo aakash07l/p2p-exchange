@@ -25,7 +25,7 @@ export default function DashboardPage() {
 
   return (
     <div className="animate-slide-up pb-8"> 
-      <div className="mt-6"></div>
+      <div className="mt-8"></div>
 
       {/* Sell price pill */}
       <div className="mx-auto flex w-fit items-center gap-3 rounded-full border border-[#d7d1ff] bg-white px-5 py-2 shadow-[0_2px_6px_rgba(80,64,200,.08)]">
@@ -35,7 +35,7 @@ export default function DashboardPage() {
         <Info size={16} className="text-[#4744ed]" />
       </div>
 
-      <div className="mt-6"></div>
+      <div className="mt-8"></div>
 
       {/* Balance display */}
       <section className="text-center">
@@ -49,7 +49,7 @@ export default function DashboardPage() {
       </section>
 
       {/* Action icons grid */}
-      <div className="mt-6"></div>
+      <div className="mt-8"></div>
       <section className="grid grid-cols-4 gap-2">
         {[
           { label: 'Wallet',   href: '/wallet',             icon: WalletCards },
@@ -64,15 +64,6 @@ export default function DashboardPage() {
             <span className="text-[14px] font-medium text-[#312d36]">{label}</span>
           </Link>
         ))}
-      </section>
-
-      {/* P2P Image Banner */}
-      <section className="mt-8 overflow-hidden rounded-[22px] border border-[#e8e5ed] shadow-[0_4px_16px_rgba(0,0,0,0.06)] bg-black">
-        <img
-          src="/images/p2p-banner.jpg"
-          alt="Peer-to-Peer P2P Trading"
-          className="w-full h-auto max-h-[180px] object-cover"
-        />
       </section>
 
     </div>
