@@ -159,18 +159,54 @@ function verifyFromLogs(
   return { success: true, confirmed: true, fromAddress, toAddress, amount, txHash, blockNumber };
 }
 
+const BSC_RPC_ENDPOINTS = [
+  'https://bsc-dataseed.binance.org',
+  'https://bsc-rpc.publicnode.com',
+  'https://1rpc.io/bnb',
+];
+
 /**
- * Gets the current USDT balance of an address on BSC
+ * Gets the current USDT balance of an address on BSC directly from RPC node
  */
 export async function getUsdtBalance(address: string): Promise<number> {
+  if (!address) return 0;
+  const cleanAddr = address.replace('0x', '').padStart(64, '0');
+  const data = '0x70a08231' + cleanAddr;
+
+  for (const rpcUrl of BSC_RPC_ENDPOINTS) {
+    try {
+      const res = await fetch(rpcUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'eth_call',
+          params: [{ to: USDT_CONTRACT, data }, 'latest'],
+        }),
+        signal: AbortSignal.timeout(4000),
+      });
+      const json = await res.json();
+      if (json.result && json.result !== '0x') {
+        const raw = BigInt(json.result);
+        return Number(raw) / 1e18;
+      }
+    } catch {
+      // continue to next RPC endpoint
+    }
+  }
+
+  // Fallback to BscScan if RPC endpoints fail
   try {
-    const url = `${BSCSCAN_BASE}?module=account&action=tokenbalance&contractaddress=${USDT_CONTRACT}&address=${address}&tag=latest&apikey=${BSCSCAN_API_KEY}`;
+    const url = `${BSCSCAN_BASE}?module=account&action=tokenbalance&contractaddress=${USDT_CONTRACT}&address=${address}&tag=latest${BSCSCAN_API_KEY ? `&apikey=${BSCSCAN_API_KEY}` : ''}`;
     const res = await fetch(url);
     const data = await res.json();
-    return Number(data.result) / 1e18;
-  } catch {
-    return 0;
-  }
+    if (data.status === '1' && data.result) {
+      return Number(data.result) / 1e18;
+    }
+  } catch {}
+
+  return 0;
 }
 
 /**
@@ -180,11 +216,7 @@ export async function getIncomingUsdtTransfers(
   recipientAddress: string
 ): Promise<{ from: string; to: string; value: number; hash: string; blockNumber: number }[]> {
   try {
-    if (!BSCSCAN_API_KEY) {
-      throw new Error('BSCSCAN_API_KEY is not configured');
-    }
-
-    const url = `${BSCSCAN_BASE}?module=account&action=tokentx&address=${recipientAddress}&startblock=0&endblock=99999999&sort=desc&apikey=${BSCSCAN_API_KEY}`;
+    const url = `${BSCSCAN_BASE}?module=account&action=tokentx&address=${recipientAddress}&startblock=0&endblock=99999999&sort=desc${BSCSCAN_API_KEY ? `&apikey=${BSCSCAN_API_KEY}` : ''}`;
     const res = await fetch(url);
     const data = await res.json();
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrivyClient } from '@privy-io/server-auth';
 import prisma from '@/lib/db/prisma';
 import { getAssetPrices } from '@/lib/api/mockApi';
+import { getUsdtBalance } from '@/lib/blockchain/bscscan';
 
 const privy = new PrivyClient(
   process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
@@ -23,6 +24,21 @@ export async function GET(req: NextRequest) {
 
     const prices = await getAssetPrices();
     let wallet = user.wallet;
+
+    // Auto-sync real-time on-chain BEP20 USDT balance from BSC RPC
+    if (wallet && wallet.address) {
+      try {
+        const onChainUsdt = await getUsdtBalance(wallet.address);
+        if (onChainUsdt > 0 || onChainUsdt !== wallet.usdtBalance) {
+          wallet = await prisma.wallet.update({
+            where: { userId: user.id },
+            data: { usdtBalance: onChainUsdt },
+          });
+        }
+      } catch (err) {
+        console.error('[Wallet API] On-chain balance sync failed:', err);
+      }
+    }
 
     // Reset legacy mock balance (6061.12) to 0 if present
     if (wallet && Math.abs(wallet.usdtBalance - 6061.12) < 0.01) {
