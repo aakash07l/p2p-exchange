@@ -30,7 +30,9 @@ export default function TransactionsPage() {
   }, [getAccessToken]);
 
   return (
-    <div className="animate-slide-up space-y-4">
+    <div className="animate-slide-up pb-10">
+      <div style={{ height: '24px' }} />
+
       {/* Activity Header */}
       <section className="overflow-hidden rounded-[22px] border border-[#e8e5ed] bg-white shadow-sm">
         <div className="flex items-center justify-between px-6 py-5 border-b border-[#f2f0f5]">
@@ -49,11 +51,13 @@ export default function TransactionsPage() {
         </div>
       </section>
 
-      {/* Transactions List Only (No FAQ) */}
+      <div style={{ height: '20px' }} />
+
+      {/* Transactions List */}
       <section className="min-h-[220px]">
         {loading ? (
           <div className="flex justify-center py-12">
-            <Loader2 className="animate-spin text-[#4744ed]" size={28} />
+            <Loader2 className="animate-spin text-[#059669]" size={28} />
           </div>
         ) : transactions.length === 0 ? (
           <div className="rounded-[22px] border border-[#e8e5ed] bg-white p-10 text-center space-y-2">
@@ -61,23 +65,25 @@ export default function TransactionsPage() {
             <p className="text-[14px] text-[#9592a0]">Your completed buys, sells, and deposits will appear here.</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {transactions.map((tx) => (
               <div
                 key={tx.id}
-                className="rounded-[18px] border border-[#e8e5ed] bg-white p-4 flex items-center justify-between shadow-sm"
+                className="rounded-[18px] border border-[#e8e5ed] bg-white p-5 flex items-center justify-between shadow-sm transition hover:border-[#059669]/30"
               >
                 <div>
-                  <strong className="block text-[15px] font-bold text-[#17161c]">
+                  <strong className="block text-[16px] font-bold text-[#17161c]">
                     {tx.type.replace('_', ' ')}
                   </strong>
-                  <p className="mt-0.5 text-[12px] text-[#9592a0]">{formatDate(tx.createdAt)}</p>
+                  <p className="mt-1 text-[13px] text-[#9592a0]">{formatDate(tx.createdAt)}</p>
                 </div>
                 <div className="text-right">
-                  <span className="font-bold text-[#4744ed] text-[15px]">
+                  <span className="font-bold text-[#059669] text-[16px]">
                     {tx.amount} {tx.asset}
                   </span>
-                  <p className="text-[11px] font-semibold text-emerald-600 capitalize">
+                  <p className={`text-[12px] font-semibold capitalize mt-0.5 ${
+                    tx.status === 'COMPLETED' ? 'text-emerald-600' : tx.status === 'FAILED' ? 'text-red-500' : 'text-amber-600'
+                  }`}>
                     {tx.status.toLowerCase()}
                   </p>
                 </div>

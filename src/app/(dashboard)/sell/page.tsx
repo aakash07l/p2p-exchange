@@ -145,7 +145,7 @@ export default function SellPage() {
       <div className="rounded-[22px] border border-[#e8e5ed] bg-white p-6 shadow-[0_3px_12px_rgba(43,35,77,.06)]">
         <p className="text-[18px] font-bold text-[#17161c]">Where should we pay you?</p>
         <p className="mt-1 text-[14px] text-[#5e5964]">
-          We'll transfer ₹{amountInr.toFixed(2)} to your UPI ID instantly after the USDC is confirmed.
+          We'll transfer ₹{amountInr.toFixed(2)} to your UPI ID instantly after the USDT is confirmed.
         </p>
 
         {/* UPI ID */}

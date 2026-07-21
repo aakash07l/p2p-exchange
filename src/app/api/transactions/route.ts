@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivyClient } from '@privy-io/server-auth';
 import prisma from '@/lib/db/prisma';
-import { verifyUsdtDeposit } from '@/lib/blockchain/bscscan';
+import { verifyUsdtDeposit, getIncomingUsdtTransfers } from '@/lib/blockchain/bscscan';
 
 const privy = new PrivyClient(
   process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
@@ -21,6 +21,37 @@ export async function GET(req: NextRequest) {
     const claims = await getAuthUser(req);
     const user = await prisma.user.findUnique({ where: { privyId: claims.userId } });
     if (!user) return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
+
+    // Auto-detect incoming deposits for user's wallet
+    const userWallet = await prisma.wallet.findUnique({ where: { userId: user.id } });
+    if (userWallet && userWallet.address) {
+      try {
+        const transfers = await getIncomingUsdtTransfers(userWallet.address);
+        for (const t of transfers) {
+          const existing = await prisma.transaction.findFirst({
+            where: { txHash: t.hash },
+          });
+          if (!existing) {
+            await prisma.transaction.create({
+              data: {
+                userId: user.id,
+                type: 'DEPOSIT',
+                status: 'COMPLETED',
+                asset: 'USDT',
+                amount: t.value,
+                fromAddress: t.from,
+                toAddress: userWallet.address,
+                txHash: t.hash,
+                depositAddress: userWallet.address,
+                notes: 'BEP20 USDT detected automatically via BSC network',
+              },
+            });
+          }
+        }
+      } catch (err) {
+        console.error('[Transactions API] Auto-detect deposits error:', err);
+      }
+    }
 
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type');

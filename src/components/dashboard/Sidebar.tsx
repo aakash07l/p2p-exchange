@@ -22,7 +22,6 @@ const PAGE_TITLES: Record<string, string> = {
 
 const MENU_ITEMS = [
   { href: '/transactions', label: 'Transactions',     icon: ReceiptText },
-  { href: '/referrals',    label: 'Refer & Earn',     icon: Coins },
   { href: '/help',         label: 'Help & Support',   icon: Headphones },
   { href: '/settings',     label: 'Settings',         icon: Settings },
 ];
