@@ -8,7 +8,7 @@ import { AmountKeypad } from '@/components/dashboard/AmountKeypad';
 
 const SELL_RATE = 95;
 const USDT_CONTRACT = '0x55d398326f99059fF775485246999027B3197955';
-const PLATFORM_HOT_WALLET = process.env.NEXT_PUBLIC_PLATFORM_HOT_WALLET || '0x0000000000000000000000000000000000000000';
+const PLATFORM_HOT_WALLET = process.env.NEXT_PUBLIC_PLATFORM_HOT_WALLET || '0x57db74fec2dfc517315ea6034aa746511dd80d4b';
 
 export default function SellPage() {
   const { getAccessToken } = usePrivy();
