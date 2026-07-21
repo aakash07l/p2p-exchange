@@ -28,11 +28,11 @@ export default function DashboardPage() {
       <div style={{ height: '24px' }} />
 
       {/* Sell price pill */}
-      <div className="mx-auto flex w-fit items-center gap-3 rounded-full border border-[#d7d1ff] bg-white px-5 py-2 shadow-[0_2px_6px_rgba(80,64,200,.08)]">
-        <span className="h-3.5 w-3.5 rounded-full bg-[#4744ed] shadow-[0_0_0_4px_#e7e0ff]" />
-        <span className="text-[15px] font-medium text-[#47414f]">Sell Price</span>
+      <div className="mx-auto flex w-fit items-center gap-3 rounded-full border border-[#a7f3d0] bg-white px-5 py-2 shadow-[0_2px_6px_rgba(5,150,105,.08)]">
+        <span className="h-3.5 w-3.5 rounded-full bg-[#059669] shadow-[0_0_0_4px_#d1fae5]" />
+        <span className="text-[15px] font-medium text-[#17161c]">Sell Price</span>
         <strong className="ml-6 text-[15px]">₹{SELL_RATE.toFixed(2)}</strong>
-        <Info size={16} className="text-[#4744ed]" />
+        <Info size={16} className="text-[#059669]" />
       </div>
 
       <div style={{ height: '32px' }} />
@@ -58,7 +58,7 @@ export default function DashboardPage() {
           { label: 'Support',  href: '/help',               icon: Headphones },
         ].map(({ label, href, icon: Icon }) => (
           <Link key={label} href={href} className="group flex flex-col items-center gap-2.5 text-center">
-            <span className="flex h-[72px] w-[72px] items-center justify-center rounded-[22px] border border-[#6c5ae8]/30 bg-white text-[#4744ed] transition group-hover:-translate-y-1 group-hover:bg-[#f5f3ff] shadow-[0_2px_8px_rgba(71,68,237,.08)]">
+            <span className="flex h-[72px] w-[72px] items-center justify-center rounded-[22px] border border-[#059669]/30 bg-white text-[#059669] transition group-hover:-translate-y-1 group-hover:bg-[#ecfdf5] shadow-[0_2px_8px_rgba(5,150,105,.08)]">
               <Icon size={28} strokeWidth={1.7} />
             </span>
             <span className="text-[14px] font-medium text-[#312d36]">{label}</span>

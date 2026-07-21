@@ -44,7 +44,7 @@ export function AmountKeypad({
             className="font-extrabold leading-none tracking-[-0.07em]"
             style={{
               fontSize: amount.length > 5 ? '52px' : '68px',
-              color: hasInsufficientFunds ? '#ef4444' : '#a093f6',
+              color: hasInsufficientFunds ? '#ef4444' : '#059669',
             }}
           >
             {amount || '0'}
@@ -55,9 +55,9 @@ export function AmountKeypad({
         </div>
 
         {/* Currency toggle pill */}
-        <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#f0edff] px-5 py-2">
+        <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#ecfdf5] px-5 py-2">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M7 10L12 5L17 10M17 14L12 19L7 14" stroke="#4744ed" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M7 10L12 5L17 10M17 14L12 19L7 14" stroke="#059669" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           <span className="text-[16px] font-semibold text-[#504b55]">INR</span>
         </div>
@@ -66,7 +66,7 @@ export function AmountKeypad({
         {balanceNote && (
           <p className="mt-4 text-[16px] text-[#504b55]">
             Available Balance:{' '}
-            <strong className={`font-semibold ${hasInsufficientFunds ? 'text-red-500' : 'text-[#4744ed]'}`}>
+            <strong className={`font-semibold ${hasInsufficientFunds ? 'text-red-500' : 'text-[#059669]'}`}>
               {balanceNote}
             </strong>
           </p>
@@ -87,7 +87,7 @@ export function AmountKeypad({
             type="button"
             key={key}
             onClick={() => append(key)}
-            className="flex items-center justify-center py-4 rounded-xl text-[30px] font-medium tracking-[-0.04em] text-[#17161b] transition hover:bg-[#f6f9ff] active:scale-90"
+            className="flex items-center justify-center py-4 rounded-xl text-[30px] font-medium tracking-[-0.04em] text-[#17161b] transition hover:bg-[#ecfdf5] active:scale-90"
           >
             {key}
           </button>
@@ -96,14 +96,14 @@ export function AmountKeypad({
           type="button"
           onClick={() => onChange(amount.slice(0, -1))}
           aria-label="Delete"
-          className="flex items-center justify-center py-4 rounded-xl transition hover:bg-[#f6f9ff] active:scale-90"
+          className="flex items-center justify-center py-4 rounded-xl transition hover:bg-[#ecfdf5] active:scale-90"
         >
           <Delete size={28} className="text-[#17161b]" />
         </button>
       </div>
 
       {/* Max / Clear shortcuts */}
-      <div className="mt-2 flex justify-between px-[18%] text-[19px] font-semibold text-[#33aa33]">
+      <div className="mt-2 flex justify-between px-[18%] text-[19px] font-semibold text-[#059669]">
         <button type="button" onClick={() => onChange('999')}>Max</button>
         <button type="button" onClick={() => onChange('')}>Clear</button>
       </div>
@@ -114,8 +114,8 @@ export function AmountKeypad({
         onClick={onContinue}
         disabled={disabled || !Number(amount) || hasInsufficientFunds}
         className="mt-6 w-full rounded-[16px] py-[18px] text-[18px] font-bold text-white transition-all
-          disabled:bg-[#000000] disabled:cursor-not-allowed
-          enabled:bg-[#000000] enabled:shadow-[0_6px_16px_rgba(71,68,237,.28)] enabled:hover:bg-[#33aa33]"
+          disabled:bg-[#cbd5e1] disabled:cursor-not-allowed
+          enabled:bg-[#17161c] enabled:shadow-[0_6px_16px_rgba(5,150,105,.28)] enabled:hover:bg-[#059669]"
       >
         {hasInsufficientFunds ? 'Insufficient Funds' : actionLabel}
       </button>

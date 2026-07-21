@@ -39,9 +39,9 @@ export default function HelpPage() {
       <div style={{ height: '24px' }} />
 
       {/* Support Hero */}
-      <section className="rounded-[24px] bg-gradient-to-br from-[#0f0f1a] via-[#1a1540] to-[#2a1f6e] p-6 text-white shadow-md relative overflow-hidden">
+      <section className="rounded-[24px] bg-gradient-to-br from-[#0f0f1a] via-[#0d2818] to-[#059669] p-6 text-white shadow-md relative overflow-hidden">
         <div className="flex items-center gap-3 mb-2">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-[#a99dff]">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-[#34d399]">
             <ShieldCheck size={22} />
           </span>
           <div>
@@ -62,7 +62,7 @@ export default function HelpPage() {
           <strong className="block text-[16px] text-[#17161c]">Need live help?</strong>
           <p className="text-[13px] text-[#9592a0]">Contact support directly</p>
         </div>
-        <button className="flex items-center gap-2 rounded-xl bg-[#4744ed] px-4 py-2.5 text-[14px] font-bold text-white hover:bg-[#3a37d4] transition">
+        <button className="flex items-center gap-2 rounded-xl bg-[#059669] px-4 py-2.5 text-[14px] font-bold text-white hover:bg-[#047857] transition">
           <MessageSquareMore size={18} /> Chat <ArrowRight size={16} />
         </button>
       </section>
@@ -108,7 +108,7 @@ export default function HelpPage() {
                       <span>{item.q}</span>
                       <ChevronDown
                         size={20}
-                        className={`text-[#4744ed] shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                        className={`text-[#059669] shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
                       />
                     </button>
                     {isOpen && (

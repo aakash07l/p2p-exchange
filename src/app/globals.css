@@ -10,9 +10,9 @@
   --fg: #17161c;
   --fg-muted: #504a56;
   --fg-faint: #9592a0;
-  --primary: #4744ed;
-  --primary-hover: #3a37d4;
-  --primary-faint: #f0edff;
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-faint: #ecfdf5;
   --border: #e8e5ed;
   --border-strong: #ccc8d8;
   --success: #059669;
@@ -164,7 +164,7 @@ body {
   white-space: nowrap;
 }
 .dock-trade:active { transform: scale(0.96); opacity: 0.9; }
-.dock-buy  { background: linear-gradient(135deg, #000 0%, #4744ed 100%); }
+.dock-buy  { background: linear-gradient(135deg, #17161c 0%, #059669 100%); }
 .dock-sell { background: #171717; }
 
 .dock-scan-wrap {
@@ -187,7 +187,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 18px rgba(67, 45, 198, 0.20);
+  box-shadow: 0 4px 18px rgba(5, 150, 105, 0.20);
 }
 
 .dock-scan-label {
@@ -308,17 +308,17 @@ body {
 }
 
 .p2p-btn-primary {
-  background: var(--primary);
+  background: #17161c;
   color: white;
-  box-shadow: 0 6px 16px rgba(71, 68, 237, 0.28);
+  box-shadow: 0 6px 16px rgba(23, 22, 28, 0.25);
 }
 .p2p-btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover);
-  box-shadow: 0 8px 20px rgba(71, 68, 237, 0.36);
+  background: #059669;
+  box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35);
   transform: translateY(-1px);
 }
 .p2p-btn-primary:active:not(:disabled) { transform: translateY(0); }
-.p2p-btn-primary:disabled { background: #b3c6fb; box-shadow: none; cursor: not-allowed; }
+.p2p-btn-primary:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
 
 /* ===================================================
    FORM INPUTS
@@ -336,8 +336,8 @@ body {
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .p2p-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(71, 68, 237, 0.10);
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
   background: white;
 }
 .p2p-input::placeholder { color: var(--fg-faint); }

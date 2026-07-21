@@ -30,10 +30,10 @@ const MENU_ITEMS = [
 function Logo() {
   return (
     <span className="flex items-center gap-2 text-[22px] leading-none font-extrabold tracking-[-0.05em] text-[#16151b]">
-      <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-gradient-to-br from-[#4744ed] to-[#7557ff] text-white shadow-[0_3px_8px_rgba(71,68,237,.3)]">
+      <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-gradient-to-br from-[#17161c] to-[#059669] text-white shadow-[0_3px_8px_rgba(5,150,105,.3)]">
         <ScanLine size={16} strokeWidth={2.5} />
       </span>
-      FASTX <span className="text-[#33aa33]">P2P</span>
+      FASTX <span className="text-[#059669]">P2P</span>
     </span>
   );
 }
@@ -51,9 +51,9 @@ function DashboardHeader({ onMenu }: { onMenu: () => void }) {
       <div className="flex items-center gap-2">
         <button aria-label="Notifications" className="icon-button relative">
           <Bell size={18} />
-          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#33aa33] ring-2 ring-white" />
+          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#059669] ring-2 ring-white" />
         </button>
-        <div className="flex h-[44px] w-[44px] items-center justify-center rounded-[13px] border border-[#e8e5ed] bg-[#f0edff] text-[15px] font-bold text-[#000000]">
+        <div className="flex h-[44px] w-[44px] items-center justify-center rounded-[13px] border border-[#e8e5ed] bg-[#ecfdf5] text-[15px] font-bold text-[#059669]">
           {initials}
         </div>
       </div>
@@ -117,7 +117,7 @@ export function Sidebar() {
               <Logo />
               <button
                 onClick={() => setMenuOpen(false)}
-                className="ml-auto rounded-full p-2 text-[#4744ed] hover:bg-[#f2f0ff]"
+                className="ml-auto rounded-full p-2 text-[#059669] hover:bg-[#ecfdf5]"
                 aria-label="Close menu"
               >
                 <ArrowLeft size={26} />
@@ -133,13 +133,13 @@ export function Sidebar() {
                   onClick={() => setMenuOpen(false)}
                   className="drawer-item"
                 >
-                  <Icon size={24} strokeWidth={1.8} className="text-[#4744ed] shrink-0" />
+                  <Icon size={24} strokeWidth={1.8} className="text-[#059669] shrink-0" />
                   <span>{label}</span>
                   <ArrowRight className="ml-auto text-[#ccc8d8]" size={22} strokeWidth={1.8} />
                 </Link>
               ))}
               <div className="drawer-item">
-                <SlidersHorizontal size={24} strokeWidth={1.8} className="text-[#4744ed] shrink-0" />
+                <SlidersHorizontal size={24} strokeWidth={1.8} className="text-[#059669] shrink-0" />
                 <span>Connection Status</span>
                 <span className="ml-auto h-4 w-4 rounded-full border-2 border-white bg-emerald-400 shadow-[0_1px_4px_rgba(16,185,129,.7)]" />
               </div>

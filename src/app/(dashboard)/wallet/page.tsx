@@ -90,8 +90,19 @@ export default function WalletPage() {
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     const t = p.get('tab');
-    if (t === 'deposit' || t === 'withdraw') setSheet(t);
+    if (t === 'deposit' || t === 'withdraw') {
+      setSheet(t);
+    } else {
+      setSheet(null);
+    }
   }, []);
+
+  const closeSheet = () => {
+    setSheet(null);
+    if (typeof window !== 'undefined' && window.location.search) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  };
 
   const copyAddress = () => {
     if (!depositAddress) return;
@@ -183,7 +194,7 @@ export default function WalletPage() {
     return (
       <div className="animate-slide-up my-6 rounded-[26px] bg-[#f6f9ff] p-8 text-center space-y-5 shadow-[0_4px_20px_rgba(50,38,143,.08)]">
         <div className="w-16 h-16 rounded-2xl bg-white border border-[#d0e4ff] flex items-center justify-center mx-auto shadow-sm">
-          <Wallet size={30} className="text-[#4744ed]" />
+          <Wallet size={30} className="text-[#059669]" />
         </div>
         <div>
           <h2 className="text-[22px] font-bold tracking-[-0.04em] text-[#17161c]">Setup Your Wallet</h2>
@@ -214,12 +225,12 @@ export default function WalletPage() {
         <div style={{ height: '24px' }} />
 
         {/* Balance hero */}
-        <div className="rounded-[24px] bg-gradient-to-br from-[#4744ed] to-[#7557ff] px-8 py-5.5 text-white shadow-[0_8px_28px_rgba(71,68,237,.30)] w-full min-w-0">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-white/60">Available Balance</p>
+        <div className="rounded-[24px] bg-gradient-to-br from-[#17161c] via-[#0d2818] to-[#059669] px-8 py-5.5 text-white shadow-[0_8px_28px_rgba(5,150,105,.25)] w-full min-w-0">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-white/70">Available Balance</p>
           <p className="mt-1 text-[42px] font-extrabold tracking-[-0.05em] leading-tight">
             ${(walletData?.usdtBalance || 0).toFixed(2)}
           </p>
-          <p className="text-[16px] text-white/60 mt-0.5">
+          <p className="text-[16px] text-emerald-300 font-medium mt-0.5">
             ≈ ₹{((walletData?.usdtBalance || 0) * 97.66).toFixed(2)}
           </p>
         </div>
@@ -262,14 +273,14 @@ export default function WalletPage() {
 
       {/* ── DEPOSIT BOTTOM SHEET ── */}
       {sheet === 'deposit' && (
-        <div className="sheet-overlay" onClick={() => setSheet(null)}>
+        <div className="sheet-overlay" onClick={closeSheet}>
           <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-handle mb-2" />
 
             {/* DEPOSIT Header right inside card */}
-            <div className="flex items-center justify-between border-b border-[#f0edff] pb-2.5 mb-3">
+            <div className="flex items-center justify-between border-b border-[#e8e5ed] pb-2.5 mb-3">
               <h3 className="text-[18px] font-extrabold text-[#17161c] tracking-tight">DEPOSIT USDT</h3>
-              <button onClick={() => setSheet(null)} className="icon-button">
+              <button onClick={closeSheet} className="icon-button">
                 <X size={18} />
               </button>
             </div>
@@ -294,14 +305,14 @@ export default function WalletPage() {
                 <div style={{ height: '24px' }} />
 
                 {/* Address & Copy Container */}
-                <div className="rounded-[20px] bg-[#f2efff] border border-[#e0dbf5] p-4 text-center">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6b6575]">
+                <div className="rounded-[20px] bg-[#ecfdf5] border border-[#a7f3d0] p-4 text-center">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#065f46]">
                     YOUR BEP-20 DEPOSIT ADDRESS
                   </p>
 
                   <div style={{ height: '16px' }} />
 
-                  <div className="rounded-[14px] bg-white border border-[#e0dbf5] px-3.5 py-3 shadow-sm">
+                  <div className="rounded-[14px] bg-white border border-[#a7f3d0] px-3.5 py-3 shadow-sm">
                     <p className="text-[13px] sm:text-[14px] font-bold font-mono text-[#17161c] break-all leading-snug tracking-tight text-center select-all">
                       {depositAddress}
                     </p>
@@ -311,9 +322,9 @@ export default function WalletPage() {
 
                   <button
                     onClick={copyAddress}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-[16px] bg-[#4744ed] text-white font-bold text-[14px] shadow-[0_4px_16px_rgba(71,68,237,.30)] hover:bg-[#3a37d4] transition active:scale-[0.98]"
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-[16px] bg-[#059669] text-white font-bold text-[14px] shadow-[0_4px_16px_rgba(5,150,105,.30)] hover:bg-[#047857] transition active:scale-[0.98]"
                   >
-                    {copied ? <CheckCircle size={16} className="text-emerald-300" /> : <Copy size={16} />}
+                    {copied ? <CheckCircle size={16} className="text-emerald-200" /> : <Copy size={16} />}
                     {copied ? 'Address Copied!' : 'Copy Deposit Address'}
                   </button>
                 </div>
@@ -329,7 +340,7 @@ export default function WalletPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-10 gap-3 text-[#9592a0]">
-                <Loader2 size={24} className="animate-spin text-[#4744ed]" />
+                <Loader2 size={24} className="animate-spin text-[#059669]" />
                 <p className="text-[13px] font-medium">Generating your BEP-20 address…</p>
               </div>
             )}
@@ -339,22 +350,22 @@ export default function WalletPage() {
 
       {/* ── USDT ACTIONS BOTTOM SHEET ── */}
       {sheet === 'usdt_actions' && (
-        <div className="sheet-overlay" onClick={() => setSheet(null)}>
+        <div className="sheet-overlay" onClick={closeSheet}>
           <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-handle mb-2" />
-            <div className="flex items-center justify-between border-b border-[#f0edff] pb-2.5 mb-4">
+            <div className="flex items-center justify-between border-b border-[#e8e5ed] pb-2.5 mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-[#d1fae5] flex items-center justify-center text-[15px] font-bold text-emerald-700">₮</div>
                 <h3 className="text-[18px] font-extrabold text-[#17161c] tracking-tight">USDT Options</h3>
               </div>
-              <button onClick={() => setSheet(null)} className="icon-button">
+              <button onClick={closeSheet} className="icon-button">
                 <X size={18} />
               </button>
             </div>
             <div className="grid grid-cols-2 gap-3 mb-2">
               <button
                 onClick={() => setSheet('deposit')}
-                className="flex flex-col items-center justify-center gap-3 p-4 rounded-[20px] border border-[#e8e5ed] bg-white text-[#17161c] hover:border-[#4744ed] hover:text-[#4744ed] transition active:scale-95 shadow-sm"
+                className="flex flex-col items-center justify-center gap-3 p-4 rounded-[20px] border border-[#e8e5ed] bg-white text-[#17161c] hover:border-[#059669] hover:text-[#059669] transition active:scale-95 shadow-sm"
               >
                 <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
                   <ArrowDownToLine size={20} />
@@ -365,7 +376,7 @@ export default function WalletPage() {
                 onClick={() => setSheet('withdraw')}
                 className="flex flex-col items-center justify-center gap-3 p-4 rounded-[20px] border border-[#e8e5ed] bg-white text-[#17161c] hover:border-[#17161c] transition active:scale-95 shadow-sm"
               >
-                <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-[#4744ed]">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-[#059669]">
                   <ArrowUpFromLine size={20} />
                 </div>
                 <span className="font-bold text-[14px]">Withdraw</span>
@@ -377,22 +388,22 @@ export default function WalletPage() {
 
       {/* ── BNB ACTIONS BOTTOM SHEET ── */}
       {sheet === 'bnb_actions' && (
-        <div className="sheet-overlay" onClick={() => setSheet(null)}>
+        <div className="sheet-overlay" onClick={closeSheet}>
           <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-handle mb-2" />
-            <div className="flex items-center justify-between border-b border-[#f0edff] pb-2.5 mb-4">
+            <div className="flex items-center justify-between border-b border-[#e8e5ed] pb-2.5 mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-[#fff7ed] flex items-center justify-center text-[11px] font-extrabold text-amber-700 font-sans">BNB</div>
                 <h3 className="text-[18px] font-extrabold text-[#17161c] tracking-tight">BNB Options</h3>
               </div>
-              <button onClick={() => setSheet(null)} className="icon-button">
+              <button onClick={closeSheet} className="icon-button">
                 <X size={18} />
               </button>
             </div>
             <div className="grid grid-cols-2 gap-3 mb-2">
               <button
                 onClick={() => setSheet('deposit')}
-                className="flex flex-col items-center justify-center gap-3 p-4 rounded-[20px] border border-[#e8e5ed] bg-white text-[#17161c] hover:border-[#4744ed] hover:text-[#4744ed] transition active:scale-95 shadow-sm"
+                className="flex flex-col items-center justify-center gap-3 p-4 rounded-[20px] border border-[#e8e5ed] bg-white text-[#17161c] hover:border-[#059669] hover:text-[#059669] transition active:scale-95 shadow-sm"
               >
                 <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
                   <ArrowDownToLine size={20} />
@@ -403,7 +414,7 @@ export default function WalletPage() {
                 onClick={() => setSheet('withdraw')}
                 className="flex flex-col items-center justify-center gap-3 p-4 rounded-[20px] border border-[#e8e5ed] bg-white text-[#17161c] hover:border-[#17161c] transition active:scale-95 shadow-sm"
               >
-                <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-[#4744ed]">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-[#059669]">
                   <ArrowUpFromLine size={20} />
                 </div>
                 <span className="font-bold text-[14px]">Withdraw</span>
@@ -426,15 +437,15 @@ export default function WalletPage() {
 
       {/* ── WITHDRAW BOTTOM SHEET ── */}
       {sheet === 'withdraw' && (
-        <div className="sheet-overlay" onClick={() => setSheet(null)}>
+        <div className="sheet-overlay" onClick={closeSheet}>
           <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-handle" />
 
             <div className="px-6 pb-4">
               {/* Sticky Header with Back Button */}
-              <div className="sticky top-0 z-10 bg-white pt-1 pb-4 flex items-center justify-between border-b border-[#f0edff]">
+              <div className="sticky top-0 z-10 bg-white pt-1 pb-4 flex items-center justify-between border-b border-[#e8e5ed]">
                 <div className="flex items-center gap-3">
-                  <button onClick={() => setSheet(null)} aria-label="Go back" className="icon-button">
+                  <button onClick={closeSheet} aria-label="Go back" className="icon-button">
                     <ArrowUpFromLine size={18} className="rotate-[-90deg]" />
                   </button>
                   <div>
@@ -444,7 +455,7 @@ export default function WalletPage() {
                     </p>
                   </div>
                 </div>
-                <button onClick={() => setSheet(null)} className="icon-button">
+                <button onClick={closeSheet} className="icon-button">
                   <X size={20} />
                 </button>
               </div>
@@ -466,7 +477,7 @@ export default function WalletPage() {
                   />
                   <button
                     onClick={() => setWithdrawAmount(String(walletData?.usdtBalance || 0))}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] font-bold text-[#4744ed] bg-[#f0edff] border border-[#d7d0f0] px-2.5 py-1.5 rounded-lg"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] font-bold text-[#059669] bg-[#ecfdf5] border border-[#a7f3d0] px-2.5 py-1.5 rounded-lg"
                   >
                     MAX
                   </button>
@@ -492,17 +503,17 @@ export default function WalletPage() {
               <div style={{ height: '24px' }} />
 
               {/* Fee breakdown */}
-              <div className="rounded-[14px] bg-[#f6f9ff] border border-[#e0dbf5] p-4 text-[13px] space-y-2">
-                <div className="flex justify-between text-[#9592a0]">
+              <div className="rounded-[14px] bg-[#ecfdf5] border border-[#a7f3d0] p-4 text-[13px] space-y-2">
+                <div className="flex justify-between text-[#504a56]">
                   <span>Network</span>
                   <span className="font-semibold text-[#17161c]">BNB Smart Chain (BEP-20)</span>
                 </div>
-                <div className="flex justify-between text-[#9592a0]">
+                <div className="flex justify-between text-[#504a56]">
                   <span>Network Fee</span>
                   <span className="font-bold text-emerald-600">0 USDT (Free)</span>
                 </div>
-                <div className="flex justify-between border-t border-[#e0dbf5] pt-2">
-                  <span className="text-[#9592a0]">Net Payout</span>
+                <div className="flex justify-between border-t border-[#a7f3d0] pt-2">
+                  <span className="text-[#504a56]">Net Payout</span>
                   <span className="font-bold text-emerald-600">
                     {parseFloat(withdrawAmount || '0').toFixed(2)} USDT
                   </span>
@@ -536,7 +547,7 @@ export default function WalletPage() {
 
               <div style={{ height: '20px' }} />
 
-              <button onClick={() => setSheet(null)} className="w-full text-[15px] font-bold text-[#4744ed] py-2 mb-4 hover:underline">
+              <button onClick={closeSheet} className="w-full text-[15px] font-bold text-[#059669] py-2 mb-4 hover:underline">
                 ← Back to Wallet
               </button>
             </div>
