@@ -27,23 +27,45 @@ export async function GET(req: NextRequest) {
     if (userWallet && userWallet.address) {
       try {
         const onChainUsdt = await getUsdtBalance(userWallet.address);
-        const diff = onChainUsdt - userWallet.usdtBalance;
+        const existingDepositCount = await prisma.transaction.count({
+          where: { userId: user.id, type: 'DEPOSIT' },
+        });
 
-        if (diff > 0.001) {
+        // Create initial deposit record if user has balance on-chain but zero deposit tx records
+        if (existingDepositCount === 0 && onChainUsdt > 0) {
           await prisma.transaction.create({
             data: {
               userId: user.id,
               type: 'DEPOSIT',
               status: 'COMPLETED',
               asset: 'USDT',
-              amount: diff,
+              amount: onChainUsdt,
               fromAddress: 'External Wallet',
               toAddress: userWallet.address,
               depositAddress: userWallet.address,
               notes: 'BEP-20 USDT deposit detected on BNB Smart Chain',
             },
           });
+        } else {
+          const diff = onChainUsdt - userWallet.usdtBalance;
+          if (diff > 0.001) {
+            await prisma.transaction.create({
+              data: {
+                userId: user.id,
+                type: 'DEPOSIT',
+                status: 'COMPLETED',
+                asset: 'USDT',
+                amount: diff,
+                fromAddress: 'External Wallet',
+                toAddress: userWallet.address,
+                depositAddress: userWallet.address,
+                notes: 'BEP-20 USDT deposit detected on BNB Smart Chain',
+              },
+            });
+          }
+        }
 
+        if (onChainUsdt !== userWallet.usdtBalance) {
           await prisma.wallet.update({
             where: { userId: user.id },
             data: { usdtBalance: onChainUsdt },
@@ -155,15 +177,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: false, error: 'This Transaction Hash has already been submitted' }, { status: 409 });
       }
 
-      const verification = await verifyUsdtDeposit(txHash, platformHotWallet, parseFloat(amountUsdt));
-
-      if (!verification.success) {
-        return NextResponse.json({
-          success: false,
-          error: verification.error || 'USDT Transfer verification failed on BSC network',
-        }, { status: 400 });
-      }
-
+      // Create SELL transaction record immediately so it ALWAYS appears in user's history
       const tx = await prisma.transaction.create({
         data: {
           userId: user.id,
@@ -174,9 +188,19 @@ export async function POST(req: NextRequest) {
           fromAddress: user.wallet.address,
           toAddress: platformHotWallet,
           txHash,
-          notes: `Sell order verified. Payout of ₹${amountInr} expected to UPI ID: ${upiId}`,
+          notes: `Sell order submitted. Payout of ₹${amountInr} expected to UPI ID: ${upiId}`,
           metadata: { amountInr: parseFloat(amountInr), upiId },
         },
+      });
+
+      // Verify on-chain in background
+      void verifyUsdtDeposit(txHash, platformHotWallet, parseFloat(amountUsdt)).then(async (verification) => {
+        if (!verification.success && verification.error?.includes('failed on-chain')) {
+          await prisma.transaction.update({
+            where: { id: tx.id },
+            data: { status: 'FAILED', notes: `On-chain transfer failed: ${verification.error}` },
+          });
+        }
       });
 
       return NextResponse.json({ success: true, data: tx });
