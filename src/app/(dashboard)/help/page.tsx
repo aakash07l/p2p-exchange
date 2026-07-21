@@ -56,8 +56,8 @@ export default function HelpPage() {
       {/* Support Contact Button */}
       <section className="rounded-[20px] bg-white border border-[#e8e5ed] p-5 flex items-center justify-between shadow-sm">
         <div>
-          <strong className="block text-[16px] text-[#17161c]">Need live help?</strong>
-          <p className="text-[13px] text-[#9592a0]">Contact directly</p>
+          <strong className="block text-[16px] text-[#17161c]">- Need live help?</strong>
+          <p className="text-[13px] text-[#9592a0]">- Contact directly</p>
         </div>
         <button className="flex items-center gap-2 rounded-xl bg-[#059669] px-4 py-2.5 text-[14px] font-bold text-white hover:bg-[#047857] transition">
           <MessageSquareMore size={18} /> Chat <ArrowRight size={16} />
