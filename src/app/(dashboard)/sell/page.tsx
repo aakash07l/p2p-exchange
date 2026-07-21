@@ -57,11 +57,11 @@ export default function SellPage() {
         signer,
       );
 
-      // Explicit gasLimit 100000n prevents Out Of Gas reverts on BSC Mainnet
+      // Explicit gasLimit BigInt(100000) prevents Out Of Gas reverts on BSC Mainnet
       const tx = await contract.transfer(
         PLATFORM_HOT_WALLET,
         parseUnits(amountUsdt, 18),
-        { gasLimit: 100000n }
+        { gasLimit: BigInt(100000) }
       );
       setStatus('Waiting for blockchain confirmation…');
       const receipt = await tx.wait();

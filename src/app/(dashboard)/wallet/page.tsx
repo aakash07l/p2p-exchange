@@ -147,11 +147,11 @@ export default function WalletPage() {
         signer,
       );
 
-      // Explicit gasLimit 100000n prevents Out Of Gas reverts on BSC Mainnet
+      // Explicit gasLimit BigInt(100000) prevents Out Of Gas reverts on BSC Mainnet
       const tx = await contract.transfer(
         withdrawAddr,
         parseUnits(withdrawAmount, 18),
-        { gasLimit: 100000n }
+        { gasLimit: BigInt(100000) }
       );
 
       const receipt = await tx.wait();
