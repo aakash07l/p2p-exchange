@@ -26,8 +26,8 @@ export async function POST(req: NextRequest) {
     const { asset, amount, toAddress, upiId } = await req.json();
 
     // Validate inputs
-    if (!asset || !amount || amount <= 0) {
-      return NextResponse.json({ success: false, error: 'Invalid withdrawal details' }, { status: 400 });
+    if (!asset || !amount || amount < 1) {
+      return NextResponse.json({ success: false, error: 'Minimum withdrawal is 1 USDT' }, { status: 400 });
     }
     if (!toAddress && !upiId) {
       return NextResponse.json({ success: false, error: 'Destination address or UPI ID required' }, { status: 400 });

@@ -231,7 +231,7 @@ export default function WalletPage() {
             ${(walletData?.usdtBalance || 0).toFixed(2)}
           </p>
           <p className="text-[16px] text-emerald-300 font-medium mt-0.5">
-            ≈ ₹{((walletData?.usdtBalance || 0) * 97.66).toFixed(2)}
+            ≈ ₹{((walletData?.usdtBalance || 0) * 95).toFixed(2)}
           </p>
         </div>
 
@@ -470,7 +470,7 @@ export default function WalletPage() {
                 <div className="relative">
                   <input
                     type="number"
-                    placeholder="Min. 5 USDT"
+                    placeholder="Min. 1 USDT"
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(e.target.value)}
                     className="p2p-input pr-20"
@@ -539,7 +539,7 @@ export default function WalletPage() {
 
               <button
                 onClick={withdraw}
-                disabled={loading || !withdrawAmount || !withdrawAddr || parseFloat(withdrawAmount) < 5}
+                disabled={loading || !withdrawAmount || !withdrawAddr || parseFloat(withdrawAmount) < 1}
                 className="p2p-btn p2p-btn-primary"
               >
                 {loading ? <><Loader2 size={15} className="animate-spin" /> Processing…</> : 'Confirm Withdrawal'}
