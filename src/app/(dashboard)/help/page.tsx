@@ -36,7 +36,7 @@ export default function HelpPage() {
 
   return (
     <div className="animate-slide-up pb-10">
-      <div className="mt-6"></div>
+      <div style={{ height: '24px' }} />
 
       {/* Support Hero */}
       <section className="rounded-[24px] bg-gradient-to-br from-[#0f0f1a] via-[#1a1540] to-[#2a1f6e] p-6 text-white shadow-md relative overflow-hidden">
@@ -54,7 +54,7 @@ export default function HelpPage() {
         </p>
       </section>
 
-      <div className="mt-6"></div>
+      <div style={{ height: '24px' }} />
 
       {/* Support Contact Button */}
       <section className="rounded-[20px] bg-white border border-[#e8e5ed] p-5 flex items-center justify-between shadow-sm">
@@ -67,13 +67,13 @@ export default function HelpPage() {
         </button>
       </section>
 
-      <div className="mt-6"></div>
+      <div style={{ height: '24px' }} />
 
       {/* FAQ Search & Accordion Section */}
       <section>
         <h2 className="text-[22px] font-bold tracking-[-0.04em] text-[#17161c]">Frequently Asked Questions</h2>
 
-        <div className="mt-6"></div>
+        <div style={{ height: '16px' }} />
 
         {/* Search Input */}
         <div className="flex items-center gap-3 rounded-[16px] border border-[#e8e5ed] bg-white px-4 py-3 shadow-sm">
@@ -86,10 +86,10 @@ export default function HelpPage() {
           />
         </div>
 
-        <div className="mt-6"></div>
+        <div style={{ height: '20px' }} />
 
         {/* Accordions */}
-        <div className="space-y-4">
+        <div>
           {filtered.length === 0 ? (
             <p className="text-[14px] text-[#9592a0] text-center py-6">No matching questions found.</p>
           ) : (
@@ -97,7 +97,7 @@ export default function HelpPage() {
               const isOpen = openIndex === index;
               return (
                 <div key={item.q}>
-                  {index > 0 && <div className="mt-6"></div>}
+                  {index > 0 && <div style={{ height: '16px' }} />}
                   <div
                     className="rounded-[18px] border border-[#e8e5ed] bg-white overflow-hidden transition-all shadow-sm"
                   >

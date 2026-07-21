@@ -83,8 +83,8 @@ export default function WalletPage() {
   useEffect(() => { if (hasWallet) loadWallet(); }, [hasWallet, loadWallet]);
 
   useEffect(() => {
-    if (sheet === 'deposit' && hasWallet && !depositAddress) loadDeposit();
-  }, [sheet, hasWallet, depositAddress, loadDeposit]);
+    if (sheet === 'deposit' && !depositAddress) loadDeposit();
+  }, [sheet, depositAddress, loadDeposit]);
 
   /* Query-param deep links e.g. /wallet?tab=deposit */
   useEffect(() => {
@@ -270,11 +270,11 @@ export default function WalletPage() {
             </div>
 
             {depositAddress ? (
-              <div className="space-y-4 text-center">
+              <div className="text-center">
 
                 {/* QR Code Container - Fully Responsive */}
-                <div className="flex justify-center py-0.5">
-                  <div className="p-2.5 bg-white border border-[#e8e5ed] rounded-[20px] shadow-md flex items-center justify-center mx-auto">
+                <div className="flex justify-center py-1">
+                  <div className="p-3 bg-white border border-[#e8e5ed] rounded-[20px] shadow-md flex items-center justify-center mx-auto">
                     {qrDataUrl && (
                       <img
                         src={qrDataUrl}
@@ -285,7 +285,7 @@ export default function WalletPage() {
                   </div>
                 </div>
 
-                <div className="mt-6"></div>
+                <div style={{ height: '24px' }} />
 
                 {/* Address & Copy Container */}
                 <div className="rounded-[20px] bg-[#f2efff] border border-[#e0dbf5] p-4 text-center">
@@ -293,7 +293,7 @@ export default function WalletPage() {
                     YOUR BEP-20 DEPOSIT ADDRESS
                   </p>
 
-                  <div className="mt-6"></div>
+                  <div style={{ height: '16px' }} />
 
                   <div className="rounded-[14px] bg-white border border-[#e0dbf5] px-3.5 py-3 shadow-sm">
                     <p className="text-[13px] sm:text-[14px] font-bold font-mono text-[#17161c] break-all leading-snug tracking-tight text-center select-all">
@@ -301,7 +301,7 @@ export default function WalletPage() {
                     </p>
                   </div>
 
-                  <div className="mt-6"></div>
+                  <div style={{ height: '16px' }} />
 
                   <button
                     onClick={copyAddress}
@@ -312,7 +312,7 @@ export default function WalletPage() {
                   </button>
                 </div>
 
-                <div className="mt-6"></div>
+                <div style={{ height: '20px' }} />
 
                 {/* Warning Pill */}
                 <div className="flex items-center justify-center gap-2 p-2.5 rounded-full bg-[#fffbeb] border border-[#fde68a] text-[11px] text-[#92400e] font-semibold">

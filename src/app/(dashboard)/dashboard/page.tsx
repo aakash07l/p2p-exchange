@@ -25,7 +25,7 @@ export default function DashboardPage() {
 
   return (
     <div className="animate-slide-up pb-8"> 
-      <div className="mt-8"></div>
+      <div style={{ height: '24px' }} />
 
       {/* Sell price pill */}
       <div className="mx-auto flex w-fit items-center gap-3 rounded-full border border-[#d7d1ff] bg-white px-5 py-2 shadow-[0_2px_6px_rgba(80,64,200,.08)]">
@@ -35,7 +35,7 @@ export default function DashboardPage() {
         <Info size={16} className="text-[#4744ed]" />
       </div>
 
-      <div className="mt-8"></div>
+      <div style={{ height: '32px' }} />
 
       {/* Balance display */}
       <section className="text-center">
@@ -49,7 +49,7 @@ export default function DashboardPage() {
       </section>
 
       {/* Action icons grid */}
-      <div className="mt-8"></div>
+      <div style={{ height: '32px' }} />
       <section className="grid grid-cols-4 gap-2">
         {[
           { label: 'Wallet',   href: '/wallet',             icon: WalletCards },
