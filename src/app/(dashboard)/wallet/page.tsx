@@ -273,6 +273,7 @@ export default function WalletPage() {
               <div className="text-center">
 
                 {/* QR Code Container - Fully Responsive */}
+                <div style={{ height: '24px' }} />
                 <div className="flex justify-center py-1">
                   <div className="p-3 bg-white border border-[#e8e5ed] rounded-[20px] shadow-md flex items-center justify-center mx-auto">
                     {qrDataUrl && (
