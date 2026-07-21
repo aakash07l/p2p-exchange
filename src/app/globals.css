@@ -164,7 +164,7 @@ body {
   white-space: nowrap;
 }
 .dock-trade:active { transform: scale(0.96); opacity: 0.9; }
-.dock-buy  { background: linear-gradient(135deg, #000000 0%, #000000 100%); }
+.dock-buy  { background: linear-gradient(135deg, #000 0%, #4744ed 100%); }
 .dock-sell { background: #171717; }
 
 .dock-scan-wrap {

@@ -35,7 +35,9 @@ export default function HelpPage() {
   );
 
   return (
-    <div className="animate-slide-up pb-10 space-y-8">
+    <div className="animate-slide-up pb-10">
+      <div className="mt-6"></div>
+
       {/* Support Hero */}
       <section className="rounded-[24px] bg-gradient-to-br from-[#0f0f1a] via-[#1a1540] to-[#2a1f6e] p-6 text-white shadow-md relative overflow-hidden">
         <div className="flex items-center gap-3 mb-2">
@@ -52,6 +54,8 @@ export default function HelpPage() {
         </p>
       </section>
 
+      <div className="mt-6"></div>
+
       {/* Support Contact Button */}
       <section className="rounded-[20px] bg-white border border-[#e8e5ed] p-5 flex items-center justify-between shadow-sm">
         <div>
@@ -63,9 +67,13 @@ export default function HelpPage() {
         </button>
       </section>
 
+      <div className="mt-6"></div>
+
       {/* FAQ Search & Accordion Section */}
-      <section className="space-y-4">
+      <section>
         <h2 className="text-[22px] font-bold tracking-[-0.04em] text-[#17161c]">Frequently Asked Questions</h2>
+
+        <div className="mt-6"></div>
 
         {/* Search Input */}
         <div className="flex items-center gap-3 rounded-[16px] border border-[#e8e5ed] bg-white px-4 py-3 shadow-sm">
@@ -78,33 +86,37 @@ export default function HelpPage() {
           />
         </div>
 
+        <div className="mt-6"></div>
+
         {/* Accordions */}
-        <div className="space-y-3 pt-2">
+        <div className="space-y-4">
           {filtered.length === 0 ? (
             <p className="text-[14px] text-[#9592a0] text-center py-6">No matching questions found.</p>
           ) : (
             filtered.map((item, index) => {
               const isOpen = openIndex === index;
               return (
-                <div
-                  key={item.q}
-                  className="rounded-[18px] border border-[#e8e5ed] bg-white overflow-hidden transition-all shadow-sm"
-                >
-                  <button
-                    onClick={() => setOpenIndex(isOpen ? null : index)}
-                    className="flex w-full items-center justify-between gap-4 p-5 text-left text-[16px] font-semibold text-[#17161c]"
+                <div key={item.q}>
+                  {index > 0 && <div className="mt-6"></div>}
+                  <div
+                    className="rounded-[18px] border border-[#e8e5ed] bg-white overflow-hidden transition-all shadow-sm"
                   >
-                    <span>{item.q}</span>
-                    <ChevronDown
-                      size={20}
-                      className={`text-[#4744ed] shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                    />
-                  </button>
-                  {isOpen && (
-                    <div className="px-5 pb-5 pt-0 text-[14px] leading-relaxed text-[#504a56] border-t border-[#f2f0f5]">
-                      {item.a}
-                    </div>
-                  )}
+                    <button
+                      onClick={() => setOpenIndex(isOpen ? null : index)}
+                      className="flex w-full items-center justify-between gap-4 p-5 text-left text-[16px] font-semibold text-[#17161c]"
+                    >
+                      <span>{item.q}</span>
+                      <ChevronDown
+                        size={20}
+                        className={`text-[#4744ed] shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+                    {isOpen && (
+                      <div className="px-5 pb-5 pt-0 text-[14px] leading-relaxed text-[#504a56] border-t border-[#f2f0f5]">
+                        {item.a}
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             })

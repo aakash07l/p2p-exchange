@@ -270,7 +270,7 @@ export default function WalletPage() {
             </div>
 
             {depositAddress ? (
-              <div className="space-y-3 text-center">
+              <div className="space-y-4 text-center">
 
                 {/* QR Code Container - Fully Responsive */}
                 <div className="flex justify-center py-0.5">
@@ -285,17 +285,23 @@ export default function WalletPage() {
                   </div>
                 </div>
 
+                <div className="mt-6"></div>
+
                 {/* Address & Copy Container */}
-                <div className="rounded-[20px] bg-[#f2efff] border border-[#e0dbf5] p-3.5 text-center space-y-2">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#6b6575]">
+                <div className="rounded-[20px] bg-[#f2efff] border border-[#e0dbf5] p-4 text-center">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6b6575]">
                     YOUR BEP-20 DEPOSIT ADDRESS
                   </p>
 
-                  <div className="rounded-[14px] bg-white border border-[#e0dbf5] px-3 py-2.5 shadow-sm">
+                  <div className="mt-6"></div>
+
+                  <div className="rounded-[14px] bg-white border border-[#e0dbf5] px-3.5 py-3 shadow-sm">
                     <p className="text-[13px] sm:text-[14px] font-bold font-mono text-[#17161c] break-all leading-snug tracking-tight text-center select-all">
                       {depositAddress}
                     </p>
                   </div>
+
+                  <div className="mt-6"></div>
 
                   <button
                     onClick={copyAddress}
@@ -305,6 +311,8 @@ export default function WalletPage() {
                     {copied ? 'Address Copied!' : 'Copy Deposit Address'}
                   </button>
                 </div>
+
+                <div className="mt-6"></div>
 
                 {/* Warning Pill */}
                 <div className="flex items-center justify-center gap-2 p-2.5 rounded-full bg-[#fffbeb] border border-[#fde68a] text-[11px] text-[#92400e] font-semibold">
