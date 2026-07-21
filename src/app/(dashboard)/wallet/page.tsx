@@ -210,48 +210,53 @@ export default function WalletPage() {
   /* ── Main wallet view ── */
   return (
     <>
-      <div className="animate-slide-up space-y-4 pt-2 pb-6">
+      <div className="animate-slide-up pb-6">
+        <div style={{ height: '24px' }} />
 
-      {/* Balance hero */}
-      <div className="rounded-[24px] bg-gradient-to-br from-[#4744ed] to-[#7557ff] px-8 py-5.5 text-white shadow-[0_8px_28px_rgba(71,68,237,.30)] w-full min-w-0">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-white/60">Available Balance</p>
-        <p className="mt-1 text-[42px] font-extrabold tracking-[-0.05em] leading-tight">
-          ${(walletData?.usdtBalance || 0).toFixed(2)}
-        </p>
-        <p className="text-[16px] text-white/60 mt-0.5">
-          ≈ ₹{((walletData?.usdtBalance || 0) * 97.66).toFixed(2)}
-        </p>
-      </div>
+        {/* Balance hero */}
+        <div className="rounded-[24px] bg-gradient-to-br from-[#4744ed] to-[#7557ff] px-8 py-5.5 text-white shadow-[0_8px_28px_rgba(71,68,237,.30)] w-full min-w-0">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-white/60">Available Balance</p>
+          <p className="mt-1 text-[42px] font-extrabold tracking-[-0.05em] leading-tight">
+            ${(walletData?.usdtBalance || 0).toFixed(2)}
+          </p>
+          <p className="text-[16px] text-white/60 mt-0.5">
+            ≈ ₹{((walletData?.usdtBalance || 0) * 97.66).toFixed(2)}
+          </p>
+        </div>
 
-      {/* Asset balances */}
-      <div className="space-y-2">
-        {balances.map(({ asset, balance, icon, bg, fgCls, action }) => (
-          <button
-            key={asset}
-            onClick={action}
-            className="w-full flex items-center justify-between rounded-[18px] border border-[#e8e5ed] bg-white p-4 transition hover:border-[#ccc8d8] hover:shadow-sm text-left active:scale-[0.99] select-none"
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className="w-11 h-11 rounded-2xl flex items-center justify-center text-[18px] font-bold shrink-0"
-                style={{ background: bg }}
+        <div style={{ height: '24px' }} />
+
+        {/* Asset balances */}
+        <div>
+          {balances.map(({ asset, balance, icon, bg, fgCls, action }, index) => (
+            <div key={asset}>
+              {index > 0 && <div style={{ height: '20px' }} />}
+              <button
+                onClick={action}
+                className="w-full flex items-center justify-between rounded-[18px] border border-[#e8e5ed] bg-white p-4 transition hover:border-[#ccc8d8] hover:shadow-sm text-left active:scale-[0.99] select-none"
               >
-                <span className={`${fgCls} ${icon.length > 1 ? 'text-[11px] font-extrabold tracking-tight' : ''}`}>{icon}</span>
-              </div>
-              <div>
-                <p className="font-semibold text-[#17161c] text-[15px]">{asset}</p>
-                <p className="text-[11px] text-[#9592a0] font-medium">BNB Smart Chain</p>
-              </div>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-11 h-11 rounded-2xl flex items-center justify-center text-[18px] font-bold shrink-0"
+                    style={{ background: bg }}
+                  >
+                    <span className={`${fgCls} ${icon.length > 1 ? 'text-[11px] font-extrabold tracking-tight' : ''}`}>{icon}</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[#17161c] text-[15px]">{asset}</p>
+                    <p className="text-[11px] text-[#9592a0] font-medium">BNB Smart Chain</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-[#17161c] text-[16px]">
+                    {balance.toFixed(asset === 'BTC' ? 6 : 2)}
+                  </p>
+                  <p className="text-[11px] text-[#9592a0]">{asset}</p>
+                </div>
+              </button>
             </div>
-            <div className="text-right">
-              <p className="font-bold text-[#17161c] text-[16px]">
-                {balance.toFixed(asset === 'BTC' ? 6 : 2)}
-              </p>
-              <p className="text-[11px] text-[#9592a0]">{asset}</p>
-            </div>
-          </button>
-        ))}
-      </div>
+          ))}
+        </div>
 
       </div>
 
@@ -425,7 +430,7 @@ export default function WalletPage() {
           <div className="sheet-panel" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-handle" />
 
-            <div className="px-6 pb-4 space-y-4">
+            <div className="px-6 pb-4">
               {/* Sticky Header with Back Button */}
               <div className="sticky top-0 z-10 bg-white pt-1 pb-4 flex items-center justify-between border-b border-[#f0edff]">
                 <div className="flex items-center gap-3">
@@ -443,6 +448,8 @@ export default function WalletPage() {
                   <X size={20} />
                 </button>
               </div>
+
+              <div style={{ height: '24px' }} />
 
               {/* Amount */}
               <div>
@@ -466,6 +473,8 @@ export default function WalletPage() {
                 </div>
               </div>
 
+              <div style={{ height: '24px' }} />
+
               {/* Destination address */}
               <div>
                 <label className="block text-[13px] font-semibold text-[#3d3843] mb-2">
@@ -479,6 +488,8 @@ export default function WalletPage() {
                   className="p2p-input font-mono text-[13px]"
                 />
               </div>
+
+              <div style={{ height: '24px' }} />
 
               {/* Fee breakdown */}
               <div className="rounded-[14px] bg-[#f6f9ff] border border-[#e0dbf5] p-4 text-[13px] space-y-2">
@@ -500,15 +511,20 @@ export default function WalletPage() {
 
               {/* Result */}
               {withdrawResult && (
-                <div className={`flex items-start gap-2.5 rounded-[14px] p-4 text-[13px] ${
-                  withdrawResult.success
-                    ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
-                    : 'bg-red-50 border border-red-200 text-red-700'
-                }`}>
-                  {withdrawResult.success ? <CheckCircle size={15} className="mt-0.5 shrink-0" /> : <AlertCircle size={15} className="mt-0.5 shrink-0" />}
-                  <p>{withdrawResult.message}</p>
-                </div>
+                <>
+                  <div style={{ height: '16px' }} />
+                  <div className={`flex items-start gap-2.5 rounded-[14px] p-4 text-[13px] ${
+                    withdrawResult.success
+                      ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+                      : 'bg-red-50 border border-red-200 text-red-700'
+                  }`}>
+                    {withdrawResult.success ? <CheckCircle size={15} className="mt-0.5 shrink-0" /> : <AlertCircle size={15} className="mt-0.5 shrink-0" />}
+                    <p>{withdrawResult.message}</p>
+                  </div>
+                </>
               )}
+
+              <div style={{ height: '24px' }} />
 
               <button
                 onClick={withdraw}
@@ -517,6 +533,8 @@ export default function WalletPage() {
               >
                 {loading ? <><Loader2 size={15} className="animate-spin" /> Processing…</> : 'Confirm Withdrawal'}
               </button>
+
+              <div style={{ height: '20px' }} />
 
               <button onClick={() => setSheet(null)} className="w-full text-[15px] font-bold text-[#4744ed] py-2 mb-4 hover:underline">
                 ← Back to Wallet
