@@ -147,21 +147,7 @@ export function Sidebar() {
 
             {/* Drawer footer */}
             <div className="space-y-4 border-t border-[#e8e6ed] px-5 py-5">
-              <Link
-                href="/wallet"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-4 rounded-[20px] bg-[#f0edff] p-4"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#4744ed]">
-                  <WalletCards size={20} />
-                </span>
-                <span className="font-semibold text-sm">
-                  <strong className="block text-[#17161c]">FastX Wallet</strong>
-                  <small className="font-normal text-[#55515e]">Send · Receive · Swap</small>
-                </span>
-                <ChevronRight className="ml-auto text-[#4744ed]" size={18} />
-              </Link>
-
+              
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ebe9ed] text-xs font-bold text-[#55515e]">
                   {name.slice(0, 1).toUpperCase()}
@@ -172,7 +158,7 @@ export function Sidebar() {
                 </span>
                 <button
                   onClick={() => logout()}
-                  className="rounded-xl p-2 text-[#4744ed] hover:bg-[#f2f0ff]"
+                  className="rounded-xl p-2 text-[#000000] hover:bg-[#f2f0ff]"
                   aria-label="Sign out"
                 >
                   <LogOut size={20} />
