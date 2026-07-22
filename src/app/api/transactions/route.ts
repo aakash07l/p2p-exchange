@@ -59,12 +59,58 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const claims = await getAuthUser(req);
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { privyId: claims.userId },
       include: { wallet: true },
     });
-    if (!user || !user.wallet) {
-      return NextResponse.json({ success: false, error: 'User wallet not found' }, { status: 404 });
+
+    if (!user) {
+      const { nanoid } = await import('nanoid');
+      let realAddress = '';
+      try {
+        const privyUser = await privy.getUser(claims.userId);
+        const walletAccount = privyUser.linkedAccounts.find(
+          (acc: any) => acc.type === 'wallet' && acc.walletClientType === 'privy'
+        ) || privyUser.linkedAccounts.find(
+          (acc: any) => acc.type === 'wallet'
+        );
+        realAddress = (walletAccount as any)?.address || '';
+      } catch (err) {
+        console.error('Error fetching Privy user info in transactions API:', err);
+      }
+
+      user = await prisma.user.create({
+        data: {
+          privyId: claims.userId,
+          referralCode: nanoid(8),
+          wallet: {
+            create: {
+              address: realAddress || `0x${Array.from({ length: 40 }, () =>
+                '0123456789abcdef'[Math.floor(Math.random() * 16)]
+              ).join('')}`,
+            },
+          },
+        },
+        include: { wallet: true },
+      });
+    } else if (!user.wallet) {
+      let realAddress = '';
+      try {
+        const privyUser = await privy.getUser(claims.userId);
+        realAddress = privyUser.wallet?.address || '';
+      } catch (err) {
+        console.error('Error fetching Privy wallet in transactions API:', err);
+      }
+
+      const newWallet = await prisma.wallet.create({
+        data: {
+          userId: user.id,
+          address: realAddress || `0x${Array.from({ length: 40 }, () =>
+            '0123456789abcdef'[Math.floor(Math.random() * 16)]
+          ).join('')}`,
+        },
+      });
+      user.wallet = newWallet;
     }
 
     const body = await req.json();
@@ -95,7 +141,7 @@ export async function POST(req: NextRequest) {
           asset: 'USDT',
           amount: parseFloat(amountUsdt),
           fromAddress: 'Platform UPI',
-          toAddress: user.wallet.address,
+          toAddress: user.wallet?.address || '',
           upiRef,
           notes: `Buy order submitted. Expecting ₹${amountInr} via UPI`,
           metadata: { amountInr: parseFloat(amountInr) },
@@ -133,7 +179,7 @@ export async function POST(req: NextRequest) {
           status: 'PENDING',
           asset: 'USDT',
           amount: numAmountUsdt,
-          fromAddress: user.wallet.address,
+          fromAddress: user.wallet?.address || '',
           toAddress: platformHotWallet,
           txHash,
           upiRef: upiId,
