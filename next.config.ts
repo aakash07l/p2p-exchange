@@ -6,14 +6,10 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '**' },
     ],
   },
-  transpilePackages: [],
-  // Turbopack config (Next.js 16 default)
-  turbopack: {
-    root: __dirname,
-  },
-  // Webpack config kept for non-Turbopack environments
+  serverExternalPackages: ['pino', 'pino-pretty'],
+  turbopack: {},
   webpack: (config) => {
-    config.externals.push('pino-pretty', 'lokijs', 'encoding');
+    config.externals.push('pino-pretty', 'pino', 'lokijs', 'encoding');
     return config;
   },
 };
