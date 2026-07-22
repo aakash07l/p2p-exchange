@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrivyClient } from '@privy-io/server-auth';
 import prisma from '@/lib/db/prisma';
-import { verifyUsdtDeposit, getUsdtBalance } from '@/lib/blockchain/bscscan';
+import { verifyUsdtDeposit } from '@/lib/blockchain/bscscan';
 
 const privy = new PrivyClient(
   process.env.NEXT_PUBLIC_PRIVY_APP_ID!,
@@ -21,59 +21,6 @@ export async function GET(req: NextRequest) {
     const claims = await getAuthUser(req);
     const user = await prisma.user.findUnique({ where: { privyId: claims.userId } });
     if (!user) return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
-
-    // Auto-detect incoming deposits for user's wallet via on-chain balance check
-    const userWallet = await prisma.wallet.findUnique({ where: { userId: user.id } });
-    if (userWallet && userWallet.address) {
-      try {
-        const onChainUsdt = await getUsdtBalance(userWallet.address);
-        const existingDepositCount = await prisma.transaction.count({
-          where: { userId: user.id, type: 'DEPOSIT' },
-        });
-
-        if (existingDepositCount === 0 && onChainUsdt > 0) {
-          await prisma.transaction.create({
-            data: {
-              userId: user.id,
-              type: 'DEPOSIT',
-              status: 'COMPLETED',
-              asset: 'USDT',
-              amount: onChainUsdt,
-              fromAddress: 'External Wallet',
-              toAddress: userWallet.address,
-              depositAddress: userWallet.address,
-              notes: 'BEP-20 USDT deposit detected on BNB Smart Chain',
-            },
-          });
-        } else {
-          const diff = onChainUsdt - userWallet.usdtBalance;
-          if (diff > 0.001) {
-            await prisma.transaction.create({
-              data: {
-                userId: user.id,
-                type: 'DEPOSIT',
-                status: 'COMPLETED',
-                asset: 'USDT',
-                amount: diff,
-                fromAddress: 'External Wallet',
-                toAddress: userWallet.address,
-                depositAddress: userWallet.address,
-                notes: 'BEP-20 USDT deposit detected on BNB Smart Chain',
-              },
-            });
-          }
-        }
-
-        if (onChainUsdt !== userWallet.usdtBalance) {
-          await prisma.wallet.update({
-            where: { userId: user.id },
-            data: { usdtBalance: onChainUsdt },
-          });
-        }
-      } catch (err) {
-        console.error('[Transactions API] On-chain deposit sync error:', err);
-      }
-    }
 
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type');
@@ -160,8 +107,8 @@ export async function POST(req: NextRequest) {
 
     // --- Handling SELL Transaction ---
     if (type === 'SELL') {
-      if (!amountUsdt || !amountInr || !upiId) {
-        return NextResponse.json({ success: false, error: 'USDT Amount, INR Amount and Payout UPI ID are required' }, { status: 400 });
+      if (!amountUsdt || !amountInr || !upiId || !txHash) {
+        return NextResponse.json({ success: false, error: 'USDT Amount, INR Amount, Payout UPI ID, and Transaction Hash are required' }, { status: 400 });
       }
 
       const numAmountUsdt = parseFloat(amountUsdt);
@@ -172,37 +119,6 @@ export async function POST(req: NextRequest) {
         ? rawHot
         : '0x57db74fec2dfc517315ea6034aa746511dd80d4b';
 
-      // 1. Sell from Internal Wallet Balance
-      if (!txHash) {
-        if (user.wallet.usdtBalance < numAmountUsdt) {
-          return NextResponse.json({ success: false, error: 'Insufficient USDT wallet balance' }, { status: 400 });
-        }
-
-        const [_, tx] = await prisma.$transaction([
-          prisma.wallet.update({
-            where: { userId: user.id },
-            data: { usdtBalance: { decrement: numAmountUsdt } },
-          }),
-          prisma.transaction.create({
-            data: {
-              userId: user.id,
-              type: 'SELL',
-              status: 'PENDING',
-              asset: 'USDT',
-              amount: numAmountUsdt,
-              fromAddress: user.wallet.address,
-              toAddress: platformHotWallet,
-              upiRef: upiId,
-              notes: `Sell order submitted from internal balance. Payout of ₹${numAmountInr} pending to UPI: ${upiId}`,
-              metadata: { amountInr: numAmountInr, upiId },
-            },
-          }),
-        ]);
-
-        return NextResponse.json({ success: true, data: tx });
-      }
-
-      // 2. Sell via On-Chain Transfer
       const duplicateTx = await prisma.transaction.findFirst({
         where: { txHash },
       });

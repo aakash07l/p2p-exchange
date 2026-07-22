@@ -23,7 +23,6 @@ export default function SellPage() {
   const [amountUsdt, setAmountUsdt] = useState('');
   const [upiId, setUpiId] = useState('');
   const [phone, setPhone] = useState('');
-  const [sellMode, setSellMode] = useState<'INTERNAL' | 'ONCHAIN'>('INTERNAL');
 
   // Loading & Timer states
   const [loading, setLoading] = useState(false);
@@ -35,7 +34,7 @@ export default function SellPage() {
   const [submittedTx, setSubmittedTx] = useState<any | null>(null);
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
 
-  // Fetch real user balance
+  // Fetch real user balance from API/On-chain sync
   const fetchBalance = useCallback(async () => {
     try {
       const token = await getAccessToken();
@@ -53,47 +52,48 @@ export default function SellPage() {
 
   const amountInr = Number(amountUsdt || 0) * SELL_RATE;
 
-  // Process Sell Order with 10s Timer
+  // Process Real On-Chain Sell Order with Privy Wallet Sign & 10s Timer
   const handleSellSubmit = async () => {
     if (!amountUsdt || Number(amountUsdt) < 1 || !upiId) return;
 
     setLoading(true);
     setErrorMsg(null);
     setCountdown(10);
-    setStatusMsg('Initiating sell request...');
-
-    let txHash: string | undefined = undefined;
+    setStatusMsg('Connecting to Privy wallet...');
 
     try {
-      // If user chooses ONCHAIN mode
-      if (sellMode === 'ONCHAIN') {
-        const activeWallet = wallets.find((w) => w.walletClientType === 'privy') || wallets[0];
-        if (!activeWallet) throw new Error('Please connect your crypto wallet first');
-        
-        setStatusMsg('Switching to BNB Smart Chain...');
-        await activeWallet.switchChain(56);
-        
-        setStatusMsg('Confirming USDT transfer in your crypto wallet...');
-        const provider = new BrowserProvider(await activeWallet.getEthereumProvider());
-        const signer = await provider.getSigner();
-        const contract = new Contract(
-          USDT_CONTRACT,
-          ['function transfer(address to, uint256 value) public returns (bool)'],
-          signer,
-        );
-
-        const tx = await contract.transfer(
-          PLATFORM_HOT_WALLET,
-          parseUnits(amountUsdt, 18),
-          { gasLimit: BigInt(100000) }
-        );
-        txHash = tx.hash;
-        setStatusMsg('On-chain transfer broadcasted! Processing order...');
-      } else {
-        setStatusMsg('Deducting USDT from wallet balance & submitting payout order...');
+      // Find the Privy connected wallet
+      const activeWallet = wallets.find((w) => w.walletClientType === 'privy') || wallets[0];
+      if (!activeWallet) {
+        throw new Error('No connected crypto wallet found. Please connect your Privy wallet first.');
       }
 
-      // Submit transaction to backend API
+      setStatusMsg('Switching network to BNB Smart Chain...');
+      await activeWallet.switchChain(56);
+
+      setStatusMsg('Please APPROVE the USDT transfer in your Privy wallet popup...');
+      
+      const provider = new BrowserProvider(await activeWallet.getEthereumProvider());
+      const signer = await provider.getSigner();
+      
+      // USDT BEP-20 Contract interface
+      const contract = new Contract(
+        USDT_CONTRACT,
+        ['function transfer(address to, uint256 value) public returns (bool)'],
+        signer,
+      );
+
+      // Trigger transaction approval on-chain (user confirms in Privy popup)
+      const tx = await contract.transfer(
+        PLATFORM_HOT_WALLET,
+        parseUnits(amountUsdt, 18),
+        { gasLimit: BigInt(100000) }
+      );
+
+      setStatusMsg('Transaction confirmed! Registering sell order on network...');
+      const hash = tx.hash;
+
+      // Submit transaction details to backend API
       const token = await getAccessToken();
       const res = await fetch('/api/transactions', {
         method: 'POST',
@@ -102,7 +102,7 @@ export default function SellPage() {
           type: 'SELL',
           amountUsdt: Number(amountUsdt),
           amountInr,
-          txHash,
+          txHash: hash,
           upiId,
           phone,
         }),
@@ -110,58 +110,52 @@ export default function SellPage() {
 
       const data = await res.json();
       if (!data.success) {
-        throw new Error(data.error || 'Failed to submit sell order');
+        throw new Error(data.error || 'Failed to register transaction on server');
       }
 
       setSubmittedTx(data.data);
       fetchBalance();
 
-      // Start 10-second Countdown Timer before showing Success screen
+      // Start 10-second Countdown Timer before showing Success card
       let currentSec = 10;
+      setStatusMsg('Broadcasting transfer on BNB Smart Chain...');
       const interval = setInterval(() => {
         currentSec -= 1;
         setCountdown(currentSec);
         if (currentSec <= 0) {
           clearInterval(interval);
           setLoading(false);
-          setStep(3); // Step 3: Success Screen
+          setStep(3); // Step 3: Success card
         }
       }, 1000);
 
     } catch (err: any) {
       setLoading(false);
-      setErrorMsg(err.message || 'Sell order failed. Please retry.');
+      // Clean up readable user rejection or error message
+      const msg = err.message || '';
+      if (msg.includes('user rejected') || msg.includes('ACTION_REJECTED') || msg.includes('declined')) {
+        setErrorMsg('Transaction was declined/rejected in your Privy wallet.');
+      } else {
+        setErrorMsg(err.message || 'USDT transfer failed. Please try again.');
+      }
     }
   };
 
   /* ── Step 1: Amount Keypad ── */
   if (step === 1) {
-    const isInsufficient = walletBalance !== null && sellMode === 'INTERNAL' && Number(amountUsdt) > walletBalance;
+    const isInsufficient = walletBalance !== null && Number(amountUsdt) > walletBalance;
 
     return (
       <div className="space-y-4">
-        {/* Toggle Mode: Internal Balance vs On-Chain Transfer */}
-        <div className="flex gap-2 p-1.5 rounded-2xl bg-[#f2f0f5] border border-[#e2dee8]">
-          <button
-            type="button"
-            onClick={() => setSellMode('INTERNAL')}
-            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-              sellMode === 'INTERNAL' ? 'bg-white text-[#17161c] shadow-sm' : 'text-[#726e7a]'
-            }`}
-          >
-            <Wallet size={15} />
-            <span>Sell from Balance</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setSellMode('ONCHAIN')}
-            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-              sellMode === 'ONCHAIN' ? 'bg-white text-[#17161c] shadow-sm' : 'text-[#726e7a]'
-            }`}
-          >
-            <ShieldCheck size={15} />
-            <span>Sell On-Chain (Crypto Wallet)</span>
-          </button>
+        {/* Banner highlighting real USDT-to-INR payout */}
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-start gap-3">
+          <ShieldCheck className="text-emerald-600 shrink-0 mt-0.5" size={18} />
+          <div>
+            <h4 className="text-xs font-black text-emerald-800 uppercase tracking-wide">Real USDT to INR Exchange</h4>
+            <p className="text-[11px] text-emerald-700 mt-0.5 leading-relaxed">
+              Verify rates, enter your UPI ID, and approve the secure on-chain transfer. We pay INR directly to your UPI ID instantly.
+            </p>
+          </div>
         </div>
 
         <AmountKeypad
@@ -173,7 +167,7 @@ export default function SellPage() {
           hasInsufficientFunds={isInsufficient}
           balanceNote={
             walletBalance === null
-              ? 'Loading balance…'
+              ? 'Loading Privy balance…'
               : `${walletBalance.toFixed(2)} USDT`
           }
         />
@@ -192,11 +186,11 @@ export default function SellPage() {
 
           <div>
             <span className="text-[11px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              Sell Order Submitted
+              Transfer Confirmed
             </span>
-            <h2 className="text-2xl font-extrabold text-[#17161c] mt-2">Payout In Progress</h2>
+            <h2 className="text-2xl font-extrabold text-[#17161c] mt-2">Sell Order Registered</h2>
             <p className="text-[14px] text-[#5e5964] mt-1 max-w-sm mx-auto">
-              Your USDT has been received. Admin is transferring <strong className="text-[#17161c]">₹{amountInr.toFixed(2)}</strong> to your UPI ID.
+              We received your USDT transfer. Admin is sending <strong className="text-[#17161c]">₹{amountInr.toFixed(2)}</strong> directly to your UPI.
             </p>
           </div>
 
@@ -275,7 +269,7 @@ export default function SellPage() {
         <div>
           <p className="text-[18px] font-bold text-[#17161c]">Payout UPI ID</p>
           <p className="mt-0.5 text-[13px] text-[#5e5964]">
-            Admin will copy your UPI ID and transfer ₹{amountInr.toFixed(2)} directly to your account.
+            Please specify the UPI ID where you want to receive your ₹{amountInr.toFixed(2)} payout.
           </p>
         </div>
 
@@ -339,7 +333,7 @@ export default function SellPage() {
 
         {/* Note */}
         <div className="rounded-2xl bg-[#f6f9ff] border border-[#e0dbf5] p-4 text-xs text-[#5e5964] leading-relaxed">
-          <strong className="text-[#17161c]">How Payout Works:</strong> Once you click below, your sell order will be registered. Admin will review the order in the Admin Panel, copy your UPI ID ({upiId || 'your UPI'}), and complete the INR transfer.
+          <strong className="text-[#17161c]">How Payout Works:</strong> Once you click below, your Privy wallet will pop up to confirm the USDT transfer. Once signed, the 10-second verification timer will complete, and admin will instantly pay the INR to your UPI ID.
         </div>
 
         {/* Submit */}
@@ -348,7 +342,7 @@ export default function SellPage() {
           disabled={loading || !upiId || Number(amountUsdt) < 1}
           className="w-full py-4 rounded-2xl bg-[#4744ed] hover:bg-[#3b38db] disabled:opacity-50 text-white font-extrabold text-sm tracking-wide transition-all shadow-md"
         >
-          {loading ? `Processing Order... (${countdown}s)` : `Submit Sell Order & Get ₹${amountInr.toFixed(2)}`}
+          {loading ? `Approve in Wallet...` : `Confirm & Transfer USDT`}
         </button>
 
         <button
