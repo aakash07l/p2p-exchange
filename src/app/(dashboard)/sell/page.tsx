@@ -90,7 +90,13 @@ export default function SellPage() {
         { gasLimit: BigInt(100000) }
       );
 
-      setStatusMsg('Transaction confirmed! Registering sell order on network...');
+      setStatusMsg('Transaction Approved! Waiting for block confirmation on BNB Smart Chain...');
+      const receipt = await tx.wait(1);
+      if (!receipt || receipt.status !== 1) {
+        throw new Error('On-chain USDT transfer transaction was reverted or failed.');
+      }
+
+      setStatusMsg('Transaction confirmed on-chain! Registering sell order on server...');
       const hash = tx.hash;
 
       // Submit transaction details to backend API

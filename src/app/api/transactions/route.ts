@@ -172,6 +172,25 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: false, error: 'This Transaction Hash has already been submitted' }, { status: 409 });
       }
 
+      // Synchronous verification with retry loop (3 attempts with 2s delay)
+      let verification = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        verification = await verifyUsdtDeposit(txHash, platformHotWallet, numAmountUsdt);
+        if (verification.success) {
+          break;
+        }
+        if (attempt < 3) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+      }
+
+      if (!verification || !verification.success) {
+        return NextResponse.json({ 
+          success: false, 
+          error: verification?.error || 'USDT transfer verification failed on-chain' 
+        }, { status: 400 });
+      }
+
       const tx = await prisma.transaction.create({
         data: {
           userId: user.id,
@@ -179,23 +198,13 @@ export async function POST(req: NextRequest) {
           status: 'PENDING',
           asset: 'USDT',
           amount: numAmountUsdt,
-          fromAddress: user.wallet?.address || '',
+          fromAddress: verification.fromAddress || user.wallet?.address || '',
           toAddress: platformHotWallet,
           txHash,
           upiRef: upiId,
           notes: `Sell order submitted on-chain. Payout of ₹${numAmountInr} pending to UPI: ${upiId}`,
           metadata: { amountInr: numAmountInr, upiId },
         },
-      });
-
-      // Background verification
-      void verifyUsdtDeposit(txHash, platformHotWallet, numAmountUsdt).then(async (verification) => {
-        if (!verification.success && verification.error?.includes('failed on-chain')) {
-          await prisma.transaction.update({
-            where: { id: tx.id },
-            data: { status: 'FAILED', notes: `On-chain transfer failed: ${verification.error}` },
-          });
-        }
       });
 
       return NextResponse.json({ success: true, data: tx });
